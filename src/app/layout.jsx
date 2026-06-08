@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       className="h-full antialiased"
     >
 
-      <body className="min-h-full flex flex-col font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink)">{children}</body>
+      <body className="min-h-full flex flex-col font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink) overflow-hidden">{children}</body>
     </html>
   );
 }

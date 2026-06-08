@@ -16,6 +16,7 @@
 
 html {scroll-behavior: smooth;}
 
+/* Scroll Sign Animation */
 @theme {
   --animate-bounceX: bounce 3s infinite;
   @keyframes bounceX { 
@@ -28,3 +29,10 @@ html {scroll-behavior: smooth;}
   }
 }
 
+.open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.open span:nth-child(2) { opacity: 0; }
+.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+.mobile-menu-open {
+  transform: translateY(27); opacity: 1; pointer-events: all;
+}
