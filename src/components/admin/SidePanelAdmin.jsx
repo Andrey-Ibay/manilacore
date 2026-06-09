@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-export default function SidePanelAdmin(){
+export default function SidePanelAdmin(props){
     return(
         <div className="flex flex-col">
-            <h2>This is a sidepanel</h2>
+            <h2>{props.name}</h2>
             <Link href={"/admin"}>Dashboard</Link>
             <Link href={"/admin/requests"}>Requests</Link>
             <Link href={"/admin/activity-logs"}>Activity Logs</Link>

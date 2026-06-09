@@ -1,7 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import SidePanelAdmin from "@/components/admin/SidePanelAdmin";
 import "@/app/globals.css";
-import { createClient } from "@/utils/supabase/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,20 +12,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Admin Dashboard",
-  description: "Dashboard for Local Culture and Heritage Preservation Management",
+  title: "Login",
+  description: "Login with user",
 };
 
 
-export default async function Admin({children}){
-  const supabase = await createClient();
-  const {data : { user }} = await supabase.auth.getUser();
-  const {data : admin} = await supabase
-      .from("admins")
-      .select("username")
-      .eq("username", "Jose Rizal")
-      .single();
-  //console.log(user.id);
+export default async function Login({children}){
+  
   return(
       
       <html
@@ -37,7 +28,6 @@ export default async function Admin({children}){
       <body className="min-h-full flex flex-col">
           <h1>This is a navbar for admin</h1>
           <div className="flex flex-row">
-            <SidePanelAdmin name={admin?.username}/>
             {children}
           </div>
       </body>
