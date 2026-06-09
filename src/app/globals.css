@@ -1,26 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gold: #C9A84C;
+  --gold-light: #E8D199;
+  --gold-dark: #8A6B1A;
+  --crimson: #8B1A1A;
+  --crimson-light: #C0392B;
+  --cream: #FAF6EF;
+  --ink: #1A1209;
+  --ink-mid: #3D2E12;
+  --warm-gray: #8C7B6B;
+  --border: rgba(201,168,76,0.25);
+  --section-pad: 90px 60px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-/*
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {scroll-behavior: smooth;}
+
+/* Scroll Sign Animation */
+@theme {
+  --animate-bounceX: bounce 3s infinite;
+  @keyframes bounceX { 
+    0%, 100%{
+      transform:translateX(-50%) translateY(0)
+    } 
+    50%{
+      transform:translateX(-50%) translateY(6px)
+    } 
   }
-}*/
+}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.open span:nth-child(2) { opacity: 0; }
+.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+.mobile-menu-open {
+  transform: translateY(27); opacity: 1; pointer-events: all;
 }
