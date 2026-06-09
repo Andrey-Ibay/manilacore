@@ -1,5 +1,5 @@
 'use client';
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 import { useState } from 'react';
 
 export default function SignUpPage() {
@@ -16,7 +16,8 @@ export default function SignUpPage() {
             },
         });
         if(error){
-            alert(error.message);
+            console.error("SUPABASE AUTH ERROR: ", error.message);
+            console.table(error);
         }else{
             alert('Check your email for the confirmation link');
         } 

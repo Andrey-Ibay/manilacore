@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server'
 
 //Reads cookies and verifies the session
 export async function middleware(request){
-    console.log("it reached the top part")
+   
+    console.log("Middleware Signal*")
     //object that will be sent to the user
     let response = NextResponse.next({
         request: {
@@ -39,8 +40,9 @@ export async function middleware(request){
 
     const { data: { user }} = await supabase.auth.getUser();
     
+
+    //----------------DREY AYUSIN MOPATOH DREYYYY-
     //If the user is not yet logged in but goes to the admin route, redirect back to login
-    console.log("It reaches this")
     if(!user && request.nextUrl.pathname.startsWith('/admin')) {
         return NextResponse.redirect(new URL('/login', request.url))
     }
@@ -50,11 +52,13 @@ export async function middleware(request){
     }
 
     return response
+
 }
 
 export const config = {
     matcher: [
         //Route of the middleware
         '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+        
     ],
 }
