@@ -9,9 +9,25 @@ export async function GET(request){
     if (code){
         const supabase = await createClient();
         const { error } = await supabase.auth.exchangeCodeForSession(code);
+        
         if (!error){
-            return NextResponse.redirect(`${origin}/admin`);
+            const { data: { user }} = await supabase.auth.getUser();
+            const { data: person } = await supabase
+                .from("users")
+                .select("id")
+                .eq("id", user?.id)
+                .single();
+                
+            console.log("test: " + person.role);
+            
+            console.log("test1: " + user);
+            if(person.role == "admin"){
+                return NextResponse.redirect(`${origin}/admin`);
+            }else if(person.role == "user"){
+                return NextResponse.redirect(`${origin}/profile`);
+            }
         }
+        
     }
     console.log("from route")
     return NextResponse.redirect(`${origin}/login`);

@@ -1,8 +1,8 @@
-export default function AdminPage(){
+export default function ProfilePage(){
     return(
         <div className="flex">
             <h1>
-                This is admin page.
+                This is profile page.
             </h1>
         </div>
     );

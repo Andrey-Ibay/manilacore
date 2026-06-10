@@ -28,7 +28,11 @@ export default function LoginPage() {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-            // This tells Google where to send the user back to in your app
+                //for selecting accounts
+                queryParams: {
+                    prompt: 'select_account',
+                },
+            // This tells Google where to send the user back to in the app
             redirectTo: `${window.location.origin}/auth/callback`,
             },
         });
@@ -42,7 +46,7 @@ export default function LoginPage() {
             <input type="email" onChange={(e) => setEmail(e.target.value)} />
             <input type="password" onChange={(e) => setPassword(e.target.value)} />
             <button onClick={handleLogin}>Login</button>
-            <button onClick={handleGoogleLogin}>Login with Google</button>
+            <button onClick={handleGoogleLogin}>Sign up with Google</button>
 
         </>
     )

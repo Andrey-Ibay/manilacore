@@ -6,7 +6,17 @@ export default function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const supabase = createClient();
+    /*
+    ============================================================================
 
+    As of now: IT SUCCESSFULLY creates a user, but it doesn't confirm nor redirect
+    
+    BALIKAN TOH IF MAY TIME PA, for now stick to Google OAuth for signup and login
+    If babalikan, setup SMTP through a free account with Resend or Postmark para 
+    maging functional yung confirmation ng signup through email.
+
+    ============================================================================
+    */
     const handleSignUp = async () => {
         const { data, error } = await supabase.auth.signUp({
             email,
@@ -19,7 +29,7 @@ export default function SignUpPage() {
             console.error("SUPABASE AUTH ERROR: ", error.message);
             console.table(error);
         }else{
-            alert('Check your email for the confirmation link');
+            alert('It worked.');
         } 
     };
     return (

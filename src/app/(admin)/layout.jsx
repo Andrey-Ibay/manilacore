@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import SidePanelAdmin from "@/components/admin/SidePanelAdmin";
+import LogoutButton from "@/components/LogoutButton";
 import "@/app/globals.css";
 import { createClient } from "@/utils/supabase/server";
 
@@ -36,6 +37,7 @@ export default async function Admin({children}){
       >
       <body className="min-h-full flex flex-col">
           <h1>This is a navbar for admin</h1>
+          <LogoutButton />
           <div className="flex flex-row">
             <SidePanelAdmin name={admin?.username}/>
             {children}
