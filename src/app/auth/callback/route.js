@@ -14,17 +14,17 @@ export async function GET(request){
             const { data: { user }} = await supabase.auth.getUser();
             const { data: person } = await supabase
                 .from("users")
-                .select("id")
-                .eq("id", user?.id)
+                .select("id, role")
+                .eq("id", user.id)
                 .single();
                 
-            console.log("test: " + person.role);
-            
-            console.log("test1: " + user);
-            if(person.role == "admin"){
-                return NextResponse.redirect(`${origin}/admin`);
-            }else if(person.role == "user"){
-                return NextResponse.redirect(`${origin}/profile`);
+            //if the user exists
+            if(person){
+                if(person.role == "admin"){
+                    return NextResponse.redirect(`${origin}/admin`);
+                }else if(person.role == "user"){
+                    return NextResponse.redirect(`${origin}/profile`);
+                }
             }
         }
         

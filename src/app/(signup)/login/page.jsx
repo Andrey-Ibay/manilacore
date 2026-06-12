@@ -1,6 +1,7 @@
 'use client';
 import { createClient } from "@/utils/supabase/client";
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -47,7 +48,7 @@ export default function LoginPage() {
             <input type="password" onChange={(e) => setPassword(e.target.value)} />
             <button onClick={handleLogin}>Login</button>
             <button onClick={handleGoogleLogin}>Sign up with Google</button>
-
+            <Link href={"/"}>Back to Home</Link>
         </>
     )
 }

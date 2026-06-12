@@ -1,5 +1,5 @@
 import "@/app/globals.css";
-
+import NavbarAndSearch from "@/components/NavbarAndSearch";
 import { Playfair_Display, DM_Sans} from "next/font/google";
 
 const playfair = Playfair_Display({
@@ -23,7 +23,10 @@ export default function RootLayout({ children }) {
       className="h-full antialiased"
     >
 
-      <body className="min-h-full flex flex-col font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink) overflow-hidden">{children}</body>
+      <body className="min-h-full flex flex-col font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink) overflow-hidden">
+        <NavbarAndSearch />
+        {children}
+      </body>
     </html>
   );
 }
