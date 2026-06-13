@@ -41,14 +41,28 @@ export async function middleware(request){
     const { data: { user }} = await supabase.auth.getUser();
     
 
-    //----------------DREY AYUSIN MOPATOH DREYYYY-
+    //----------------DREY AYUSIN MOPATOH DREYYYY- thank you past drey
     //If the user is not yet logged in but goes to the admin route, redirect back to login
+    //if the user exists
     if(!user && request.nextUrl.pathname.startsWith('/admin')) {
         return NextResponse.redirect(new URL('/login', request.url))
     }
-    //If the user is logged in, the redirect to the admin route
+    //If the user is logged in, the redirect to the route
     if (user && request.nextUrl.pathname.startsWith('/login')) {
-        return NextResponse.redirect(new URL('/admin', request.url))
+        const { data: person } = await supabase
+        .from("users")
+        .select("id, role")
+        .eq("id", user.id)
+        .single();
+        
+        //Checks role
+        if(person){
+            if(person.role == "admin"){
+                return NextResponse.redirect(new URL('/admin', request.url))
+            }else if(person.role == "user"){
+                return NextResponse.redirect(new URL('/profile', request.url))
+            }
+        }
     }
 
     return response
