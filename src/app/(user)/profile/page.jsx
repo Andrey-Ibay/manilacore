@@ -10,11 +10,20 @@ export default function ProfilePage(){
 
     const [images, setImages] = useState([]);
 
+    /*Renders the specific files of the corresponding user */
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await supabase.from('items').select('*');
-            console.log("Stored on state : ", [...images, ...data.map(datum => datum)]);
-            setImages(images => [...images, ...data.map(datum => datum)]);
+            const { data: { user }} = await supabase.auth.getUser();
+            if(user){
+                const { data } = await supabase
+                    .from('items')
+                    .select('*')
+                    .eq('user_id', user.id);
+                
+                if(data){
+                    setImages(data);
+                }
+            }
         };
         fetchData();
     }, []);
@@ -36,16 +45,25 @@ export default function ProfilePage(){
 
         return filePath;
     }
+    //saves the file from the storage bucket in supabase to the table
     const saveToDatabase = async (filePath, imageName) => {
-        const { data, error } = await supabase
+        const { data: {user}} = await supabase.auth.getUser();
+        const { data: newRow, error } = await supabase
             .from("items")
             .insert([
                 {
+                    user_id: user.id,
                     image_path: filePath
                 }
-            ]);
+            ])
+            .select()
+            .single();
 
-        if (error) console.log("Failed to save to database: ", error);
+        if (error){
+            console.log("Failed to save to database: ", error);
+        }else{
+            setImages((setImages) => [...images, newRow]);
+        }
     }
     const handleUpload = async (event) =>{
         console.log("This triggered.");
@@ -57,7 +75,8 @@ export default function ProfilePage(){
 
                 await saveToDatabase(filePath, file.name);
                 console.log("Success");
-
+                
+                
             }catch (error){
                 console.error("Upload failed: ", error);
             }
