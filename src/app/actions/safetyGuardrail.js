@@ -22,7 +22,12 @@ export async function safetyGuardrail(formData){
                 role: "user",
                 parts: [
                     { text: "Is this image safe? Strictly output only SAFE or UNSAFE." },
-                    { inlineData: { data: base64Image, mimeType: file.type } }
+                    { 
+                        inlineData: { 
+                            data: base64Image, 
+                            mimeType: file.type 
+                        } 
+                    }
                 ]
             }
         ]

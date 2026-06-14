@@ -20,11 +20,24 @@ export async function processWithGemini(imageFile){
     console.log("base64: ", image);
     console.log("mimeType: ", mimeType);
 
+    function thinkingLvl(modelName){
+        if(modelName.includes("3.5") || modelName.includes("3.1")){
+            return { thinkingLevel : "medium" };
+        }
+        return { thinkingBudget: 2048 }
+    }
     // Use Gemini 3.5 Flash
     // For classification
-    async function getCategory(prompt, imageInput, mime) {
+    async function getCategory(prompt, imageInput, mime, phase) {
+        //Switch between models
+        const models = {
+            1: "gemini-3.1-flash-lite",
+            2: "gemini-2.5-flash",
+            3: "gemini-3.5-flash"
+        };
+
         const response = await geminiAI.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: models[phase],
             contents: [
                 {
                     role: "user",
@@ -40,7 +53,7 @@ export async function processWithGemini(imageFile){
                 }
             ],
             config: {
-                thinkingConfig: { thinkingBudget: 2048},
+                thinkingConfig: thinkingLvl(models[phase]),
                 responseMimeType: "application/json",
             },
         });
@@ -70,7 +83,7 @@ export async function processWithGemini(imageFile){
 
             ### Current Task:
             Choices: ${JSON.stringify(rootCats)}.
-            Output:`, image, mimeType);
+            Output:`, image, mimeType, 1);
         console.log("Result: ", rootId);
 
         // 2. Sub
@@ -91,31 +104,11 @@ export async function processWithGemini(imageFile){
 
             ### Current Task:
             Choices: ${JSON.stringify(subCats)}.
-            Output:`, image, mimeType);
+            Output:`, image, mimeType, 2);
         console.log("Result: ", subId);
 
-        // 3. Items
-        console.log("Phase 3 began...");
-        const { data: items } = await supabase.from("categories").select("id, category_title").eq("parent_id", subId);
-        const itemId = await getCategory(`
-            You are a precise classification engine. 
-            - You must analyze the image content relative to the provided category list.
-            - If the image does not fit any category, output {"id": 0}.
-            - Output ONLY a valid JSON object in the format: {"id": <integer>}.
-            - Do not include any text outside the JSON object.
-            
 
-            ### Example:
-            Input Choices: [{"id": 10, "category_title": "apple"}, {"id": 11, "category_title": "mango"}]
-            Image Content: A red apple.
-            Output: {"id": 10}
-
-            ### Current Task:
-            Choices: ${JSON.stringify(items)}.
-            Output:`, image, mimeType);
-        console.log("Result: ", itemId);
-
-        return itemId;
+        return subId;
     } catch (error) {
         console.error("Classification Pipeline Error:", error);
         return null;
