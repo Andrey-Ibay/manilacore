@@ -3,12 +3,18 @@
 import { useState, useEffect, useRef } from 'react';
 
 import LogoutButton from "@/components/LogoutButton";
+
 import { createClient } from "@/utils/supabase/client";
 import { processWithGemini } from "@/app/actions/processWithGemini";
 import { safetyGuardrail } from '@/app/actions/safetyGuardrail';
 
 export default function ProfilePage(){
     const supabase = createClient();
+    const [addCard, setAddCard] = useState(false);
+    const [userPfp, setUserPfp] = useState(null);
+    const [userName, setUserName] = useState("");
+    const [openedImage, setOpenedImage] = useState(false);
+    const [imageKey, setImageKey] = useState("");
     const [images, setImages] = useState([]);
 
     const fileInputRef = useRef(null);
@@ -25,6 +31,8 @@ export default function ProfilePage(){
                 
                 if(data){
                     setImages(data);
+                    setUserPfp(user.user_metadata.avatar_url || user.user_metadata.picture);
+                    setUserName(user.user_metadata.full_name || user.user_metadata.name);
                 }
             }
         };
@@ -50,10 +58,10 @@ export default function ProfilePage(){
         return filePath;
     }
     //saves the file from the storage bucket in supabase to the table
-    const saveToDatabase = async (filePath) => {
+    const saveToDatabase = async (filePath, file) => {
     
         //passes the image to Gemini Flash 3.5 for processing
-        const geminiCategoryResult = await processWithGemini(filePath);
+        const geminiCategoryResult = await processWithGemini(file);
         console.log("Gemini output: ", geminiCategoryResult);
 
         //saves to database
@@ -76,7 +84,7 @@ export default function ProfilePage(){
             setImages((setImages) => [...images, newRow]);
         }
     }
-    const handleUpload = async (event) =>{
+    const handleUpload = async () =>{
 
         console.log("Handle Upload starting...");
 
@@ -96,7 +104,7 @@ export default function ProfilePage(){
                 const filePath = await uploadImage(file);
 
                 //passes file path to save in the database
-                await saveToDatabase(filePath);
+                await saveToDatabase(filePath, file);
                 console.log("Success");
                 
                 
@@ -122,21 +130,47 @@ export default function ProfilePage(){
     }
 
     return(
-        <div className="min-h-screen flex items-center justify-center">
-            <h1>
-                This is profile page.
-            </h1>
-            <LogoutButton />
-            <input type="file" ref={fileInputRef}/>
-            <button onClick={handleUpload}>Submit</button>
-            <button onClick={removeFile}>Remove File</button>
-            <div>
-                {images.map((row) => (
-                    <div key={row.id}>
-                        <img src={getImageUrl(row.image_path)} className="w-20 h-20"/>
-                    </div>
-                ))}
+        <div className="flex w-[100%] justify-center mt-20 pt-20">    
+            <div className="flex justify-center flex-col w-[20%]">
+                <div className="flex">
+                    <img src={userPfp} className="w-10 h-10" />
+                    <h1>{userName}</h1>
+                </div>
+                <button className="bg-red-600 w-30" onClick={() => setAddCard(true)}>+ New Post</button>
+                <LogoutButton />
+            </div>
+            <div className="flex flex-col bg-red-500 w-[70%] justify-center items-center">
+                <h1>
+                    This is profile page.
+                </h1>
+                {
+                    addCard && (<div className="absolute flex flex-col bg-blue-600 justify-center items-center">
+                        <button onClick={() => setAddCard(false)}> Exit </button>
+                        <input type="file" ref={fileInputRef}/>
+                        <button onClick={handleUpload}>Submit</button>
+                        <button onClick={removeFile}>Remove File</button>
+                    </div>)
+                }
+                <div className="grid grid-cols-4">
+                    {images.map((row) => (
+                        <div key={row.id}>
+                            <img src={getImageUrl(row.image_path)} className="rounded-2xl cursor-pointer" onClick={() => {
+                                setOpenedImage(true);
+                                setImageKey(row.id);
+                                }}/>
+                            {
+                                (imageKey == row.id) && openedImage && (<div className="fixed flex flex-col bg-blue-600 justify-center items-center">
+                                    <img src={getImageUrl(row.image_path)} className="rounded-2xl"/>
+                                    <h2>{row.headers}</h2>
+                                    <p>{row.description}</p>
+                                    <button onClick={() => setOpenedImage(false)}>Exit</button>
+                                </div>)
+                            }
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
+        
     );
 }

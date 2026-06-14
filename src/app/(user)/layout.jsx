@@ -1,6 +1,6 @@
 import "@/app/globals.css";
-import NavbarAndSearch from "@/components/NavbarAndSearch";
 import { Playfair_Display, DM_Sans} from "next/font/google";
+import NavbarAndSearch from "@/components/NavbarAndSearch";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       className="h-full antialiased"
     >
 
-      <body className="min-h-full flex flex-col font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink) overflow-hidden">
+      <body className="min-h-full items-center flex flex-col font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink) overflow-hidden">
         <NavbarAndSearch />
         {children}
       </body>
