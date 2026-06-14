@@ -50,10 +50,10 @@ export default function ProfilePage(){
         return filePath;
     }
     //saves the file from the storage bucket in supabase to the table
-    const saveToDatabase = async (filePath) => {
+    const saveToDatabase = async (filePath, file) => {
     
         //passes the image to Gemini Flash 3.5 for processing
-        const geminiCategoryResult = await processWithGemini(filePath);
+        const geminiCategoryResult = await processWithGemini(file);
         console.log("Gemini output: ", geminiCategoryResult);
 
         //saves to database
@@ -76,7 +76,7 @@ export default function ProfilePage(){
             setImages((setImages) => [...images, newRow]);
         }
     }
-    const handleUpload = async (event) =>{
+    const handleUpload = async () =>{
 
         console.log("Handle Upload starting...");
 
@@ -96,7 +96,7 @@ export default function ProfilePage(){
                 const filePath = await uploadImage(file);
 
                 //passes file path to save in the database
-                await saveToDatabase(filePath);
+                await saveToDatabase(filePath, file);
                 console.log("Success");
                 
                 
