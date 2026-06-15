@@ -3,21 +3,31 @@
 import { useState, useEffect, useRef } from 'react';
 
 import LogoutButton from "@/components/LogoutButton";
+import NewsFeed from "@/components/sections/NewsFeed";
+import Image from "next/image";
 
 import { createClient } from "@/utils/supabase/client";
 import { processWithGemini } from "@/app/actions/processWithGemini";
 import { safetyGuardrail } from '@/app/actions/safetyGuardrail';
 
 export default function ProfilePage(){
+    
     const supabase = createClient();
+
+    //State
     const [addCard, setAddCard] = useState(false);
     const [userInfo, setUserInfo] = useState({});
     const [openedImage, setOpenedImage] = useState(false);
     const [imageKey, setImageKey] = useState({});
     const [images, setImages] = useState([]);
+    const [hasPreview, setHasPreview] = useState(false);
 
+    //UseRef hooks for inputs
+    const textareaRef = useRef(null);
+    const inputHeaderRef = useRef(null);
     const fileInputRef = useRef(null);
-
+    const tempImgHook = useRef("");
+    
     //Renders the specific files of the corresponding user 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,7 +37,6 @@ export default function ProfilePage(){
                 const { data } = await supabase
                     .from('items')
                     .select('*')
-                    .eq('user_id', user.id);
                 
                 if(data){
                     setImages(data);
@@ -38,6 +47,14 @@ export default function ProfilePage(){
         fetchData();
     }, []);
 
+    //For showing a temporary file
+    const showPreview = (event) => {
+        const file = event.target.files[0];
+        if(file){
+            tempImgHook.current = URL.createObjectURL(file);
+            setHasPreview(true);
+        }
+    }
     //Uploads image to storage bucket.
     const uploadImage = async (file) => {
         //formats file
@@ -57,7 +74,7 @@ export default function ProfilePage(){
         return filePath;
     }
     //saves the file from the storage bucket in supabase to the table
-    const saveToDatabase = async (filePath, file) => {
+    const saveToDatabase = async (filePath, file, desc, head) => {
     
         //passes the image to Gemini Flash 3.5 for processing
         const geminiCategoryResult = await processWithGemini(file);
@@ -71,7 +88,10 @@ export default function ProfilePage(){
                 {
                     user_id: user.id,
                     image_path: filePath,
-                    category_id: geminiCategoryResult
+                    category_id: geminiCategoryResult,
+                    description: desc,
+                    headers: head,
+                    user_name: user.user_metadata.full_name
                 }
             ])
             .select()
@@ -86,6 +106,10 @@ export default function ProfilePage(){
     const handleUpload = async () =>{
 
         console.log("Handle Upload starting...");
+
+        //Description and headers
+        const description = textareaRef.current.value;
+        const header = inputHeaderRef.current.value;
 
         //Prepare file for safety check
         const formData = new FormData();
@@ -103,7 +127,7 @@ export default function ProfilePage(){
                 const filePath = await uploadImage(file);
 
                 //passes file path to save in the database
-                await saveToDatabase(filePath, file);
+                await saveToDatabase(filePath, file, description, header);
                 console.log("Success");
                 
                 
@@ -126,50 +150,51 @@ export default function ProfilePage(){
     //remove attached file
     const removeFile = () => {
         fileInputRef.current.value = '';
+        setHasPreview(false);
     }
 
     return(
         <div className="flex w-full h-full justify-center mt-20 pt-20">    
             <div className="flex items-center flex-col w-[20%]">
                 <div className="flex">
-                    <img src={userInfo?.user_metadata?.avatar_url || "#"} className="w-10 h-10" />
+                    <img src={userInfo?.user_metadata?.avatar_url || "#"} className="rounded-full w-10 h-10" />
                     <h1>{userInfo?.user_metadata?.full_name || userInfo?.user_metadata?.name || "Loading data..."}</h1>
                 </div>
                 <button className="bg-red-600 w-30" onClick={() => setAddCard(true)}>+ New Post</button>
                 <LogoutButton />
             </div>
-            <div className=" flex flex-col bg-red-500 w-[70%] items-center">
-                <h1>
-                    This is profile page.
-                </h1>
-                {
-                    addCard && (<div className="absolute flex flex-col bg-blue-600 justify-center items-center">
-                        <button onClick={() => setAddCard(false)}> Exit </button>
-                        <input type="file" ref={fileInputRef}/>
-                        <button onClick={handleUpload}>Submit</button>
+            {
+                
+                addCard && (<div className="absolute flex bg-blue-600 justify-center items-center">
+                    <div>
+                        <button onClick={() => {
+                            setAddCard(false);
+                            removeFile();
+                            }
+                        }> Exit </button>
+                        {
+                            (hasPreview === true) ? (<Image src={tempImgHook.current} width="300" height="200" alt="Preview"/>) : (<Image src={"/blank_image.jpg"} width="300" height="200" alt="Preview"/>)
+                        }
+                    </div>
+                    <div className="flex flex-col">
+                        <input type="file" onChange={showPreview} ref={fileInputRef}/>
+                        <input className="bg-grey-100" type="text" ref={inputHeaderRef}placeholder="My post" />
+                        <textarea  className="bg-grey-100" ref={textareaRef} placeholder="Something to say?"/>
+                        <button onClick={handleUpload}>Post</button>
                         <button onClick={removeFile}>Remove File</button>
-                    </div>)
-                }
-                <div className="grid grid-cols-4">
-                    {images.map((row) => (
-                        <div key={row.id}>
-                            <img src={getImageUrl(row.image_path)} className="rounded-2xl cursor-pointer" onClick={() => {
-                                setOpenedImage(true);
-                                setImageKey(row);
-                                
-                                }}/>
-                        </div>
-                    ))}
-                </div>
-                {
-                    (imageKey.user_id == userInfo?.id) && openedImage && (<div className="absolute flex flex-col bg-blue-600 justify-center items-center">
-                        <img src={getImageUrl(imageKey.image_path)} className="rounded-2xl"/>
-                        <h2>{imageKey.headers}</h2>
-                        <p>{imageKey.description}</p>
-                        <button onClick={() => setOpenedImage(false)}>Exit</button>
-                    </div>)
-                }
-            </div>
+                    </div>
+                </div>)
+            }
+            <NewsFeed 
+                userInfo={userInfo}
+                images={images}
+                getImageUrl={getImageUrl}
+                setOpenedImage={setOpenedImage}
+                setImageKey={setImageKey}
+                imageKey={imageKey}
+                userInfo={userInfo}
+                openedImage={openedImage}
+            />
         </div>
         
     );
