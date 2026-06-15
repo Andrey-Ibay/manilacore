@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       className="h-full antialiased"
     >
 
-      <body className="min-h-full items-center flex flex-col font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink) overflow-hidden">
+      <body className="h-full items-center flex flex-col font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink) overflow-hidden">
         <NavbarAndSearch />
         {children}
       </body>

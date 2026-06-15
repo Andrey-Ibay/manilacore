@@ -11,10 +11,9 @@ import { safetyGuardrail } from '@/app/actions/safetyGuardrail';
 export default function ProfilePage(){
     const supabase = createClient();
     const [addCard, setAddCard] = useState(false);
-    const [userPfp, setUserPfp] = useState(null);
-    const [userName, setUserName] = useState("");
+    const [userInfo, setUserInfo] = useState({});
     const [openedImage, setOpenedImage] = useState(false);
-    const [imageKey, setImageKey] = useState("");
+    const [imageKey, setImageKey] = useState({});
     const [images, setImages] = useState([]);
 
     const fileInputRef = useRef(null);
@@ -22,6 +21,7 @@ export default function ProfilePage(){
     //Renders the specific files of the corresponding user 
     useEffect(() => {
         const fetchData = async () => {
+            console.log("useEffect started.")
             const { data: { user }} = await supabase.auth.getUser();
             if(user){
                 const { data } = await supabase
@@ -31,8 +31,7 @@ export default function ProfilePage(){
                 
                 if(data){
                     setImages(data);
-                    setUserPfp(user.user_metadata.avatar_url || user.user_metadata.picture);
-                    setUserName(user.user_metadata.full_name || user.user_metadata.name);
+                    setUserInfo(user);
                 }
             }
         };
@@ -130,16 +129,16 @@ export default function ProfilePage(){
     }
 
     return(
-        <div className="flex w-[100%] justify-center mt-20 pt-20">    
-            <div className="flex justify-center flex-col w-[20%]">
+        <div className="flex w-full h-full justify-center mt-20 pt-20">    
+            <div className="flex items-center flex-col w-[20%]">
                 <div className="flex">
-                    <img src={userPfp} className="w-10 h-10" />
-                    <h1>{userName}</h1>
+                    <img src={userInfo?.user_metadata?.avatar_url || "#"} className="w-10 h-10" />
+                    <h1>{userInfo?.user_metadata?.full_name || userInfo?.user_metadata?.name || "Loading data..."}</h1>
                 </div>
                 <button className="bg-red-600 w-30" onClick={() => setAddCard(true)}>+ New Post</button>
                 <LogoutButton />
             </div>
-            <div className="flex flex-col bg-red-500 w-[70%] justify-center items-center">
+            <div className=" flex flex-col bg-red-500 w-[70%] items-center">
                 <h1>
                     This is profile page.
                 </h1>
@@ -156,19 +155,20 @@ export default function ProfilePage(){
                         <div key={row.id}>
                             <img src={getImageUrl(row.image_path)} className="rounded-2xl cursor-pointer" onClick={() => {
                                 setOpenedImage(true);
-                                setImageKey(row.id);
+                                setImageKey(row);
+                                
                                 }}/>
-                            {
-                                (imageKey == row.id) && openedImage && (<div className="fixed flex flex-col bg-blue-600 justify-center items-center">
-                                    <img src={getImageUrl(row.image_path)} className="rounded-2xl"/>
-                                    <h2>{row.headers}</h2>
-                                    <p>{row.description}</p>
-                                    <button onClick={() => setOpenedImage(false)}>Exit</button>
-                                </div>)
-                            }
                         </div>
                     ))}
                 </div>
+                {
+                    (imageKey.user_id == userInfo?.id) && openedImage && (<div className="absolute flex flex-col bg-blue-600 justify-center items-center">
+                        <img src={getImageUrl(imageKey.image_path)} className="rounded-2xl"/>
+                        <h2>{imageKey.headers}</h2>
+                        <p>{imageKey.description}</p>
+                        <button onClick={() => setOpenedImage(false)}>Exit</button>
+                    </div>)
+                }
             </div>
         </div>
         
