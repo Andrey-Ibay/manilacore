@@ -13,7 +13,7 @@ const NavBar = ({ setOpenSearch, setToggleForm }) => {
   }
 
   return (
-    <>
+    <div>
       {/* NAVIGATION BAR */}
       <nav className="fixed top-0 left-0 right-0 z-100 flex justify-between items-center px-15 py-4 bg-[rgba(26,18,9,0.92)] backdrop-blur-[10px] border-b border-(--border) max-[900px]:px-5 max-[900px]:py-3.5">
         <div className="font-['Playfair_Display',serif] text-[22px] max-[900px]:text-[18px] font-bold text-(--gold) tracking-[0.04em]">
@@ -146,7 +146,7 @@ const NavBar = ({ setOpenSearch, setToggleForm }) => {
           </div>
         </div>
       </nav>
-    </>
+    </div>
   )
 }
 
