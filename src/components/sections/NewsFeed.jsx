@@ -86,7 +86,7 @@ export default function NewsFeed(props){
                                             <img src={props.imageKey.avatar_url} className="object-cover rounded-full w-10 h-10"/>
                                             <div className="flex-col flex">
                                                 <h1>{props.imageKey.user_name}</h1>
-                                                <p className="text-sm">{date}</p>
+                                                <p className="text-sm">{formattedDate}</p>
                                             </div>
                                         </div>
                                         <div className="flex flex-col justify-center">
