@@ -249,6 +249,7 @@ export default function ProfilePage(){
                     setImageKey={setImageKey}
                     imageKey={imageKey}
                     openedImage={openedImage}
+
                 />) : (<div className="animate-pulse bg-gray-300 h-[80%] rounded-2xl ml-10 w-[80%]"/>)
             }
         </div>

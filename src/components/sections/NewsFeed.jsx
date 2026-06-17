@@ -10,28 +10,17 @@ export default function NewsFeed(props){
     const [hasMore, setHasMore] = useState(true);
 
     
-    const [{date} = {}] = props.imageKey || [];
-    
-    const dateVar = date;
-    console.log(dateVar);
-    const [year, month, day] = dateVar.split("-");
-    
-    const localDate = new Date(year, month - 1, day);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = localDate.toLocaleDateString('en-US', options);
+    const dateVar = props.imageKey?.date; 
+
+    const formattedDate = dateVar 
+    ? new Date(dateVar.split("-")[0], dateVar.split("-")[1] - 1, dateVar.split("-")[2]).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    : "No date available";
 
     console.log(props.images.length);
-    /*
-    const formattedDate = useMemo(() => {
-    if (!props.imageKey?.date) return '';
-    const [year, month, day] = props.imageKey.date.split("-");
-    return new Date(year, month - 1, day).toLocaleDateString('en-US', { 
-        year: 'numeric', month: 'long', day: 'numeric' 
-    });
-    }, [props.imageKey?.date]);*/
 
     console.log("Test user object: ", props.images);
-    const [{user_name} = {}] = props.images || [];
+    
+    const user_name = props.images.length > 0 ? props.images[0].user_name : "Loading...";
     console.log("Test props id: ", user_name);
     console.log("Test auth id: ", props.userInfo.user_metadata.full_name);
     return(
