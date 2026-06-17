@@ -64,7 +64,7 @@ export async function middleware(request){
             }
         }
     }
-    
+    //fix bug that you can type /profile
 
     return response
 

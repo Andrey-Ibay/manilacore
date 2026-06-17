@@ -129,7 +129,8 @@ export default function ProfilePage(){
                     category_id: geminiCategoryResult,
                     description: desc,
                     headers: head,
-                    user_name: user.user_metadata.full_name
+                    user_name: user.user_metadata.full_name,
+                    avatar_url: user.user_metadata.avatar_url
                 }
             ])
             .select()
