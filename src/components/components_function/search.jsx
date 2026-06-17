@@ -22,23 +22,25 @@ const Search = ({ setOpenSearch }) => {
 
         <input type="text" className="flex-1 bg-transparent border-0 outline-none font-['Playfair_Display',serif] text-[28px] text-white caret-(--gold) placeholder:text-white/20 max-[900px]:text-[20px]" placeholder="Search Manila's history, food, traditions…" ref={inputRef}/>
 
-        <button className="bg-transparent border border-white/15 text-white/50 cursor-pointer px-4 py-2 text-[12px] tracking-widest font-['DM_Sans',sans-serif] uppercase transition-all duration-200 shrink-0 hover:border-(--gold) hover:text-(--gold)" onClick={() => setOpenSearch(false)}>✕ Close</button>
+        <button className="bg-transparent border border-white/15 text-white/50 cursor-pointer px-4 py-2 text-[12px] tracking-widest font-['DM_Sans',sans-serif] uppercase transition-all duration-200 shrink-0 hover:border-(--gold) hover:text-(--gold)" onClick={() => setOpenSearch(false)}>
+          ✕ Close
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto px-15 py-10 max-[900px]:py-6 max-[900px]:px-5" id="search-body">
         <div className="flex flex-col items-center justify-center min-h-75 gap-4 text-white/20" id="search-empty">
 
-          <div className="font-['Playfair_Display',serif] text-[24px] text-white/15">What are you looking for?</div>
+          <div className="font-['Playfair_Display',serif] text-[24px] text-white/15">
+            What are you looking for?
+          </div>
 
-          <div className="text-[13px] tracking-[0.08em] text-white/25">Try a topic, dish, person, or place</div>
+          <div className="text-[13px] tracking-[0.08em] text-white/25">
+            Try a topic, dish, person, or place
+          </div>
           
-          <div className="flex flex-wrap gap-2.5 mt-2">
+          <div className="flex flex-wrap gap-2.5 mt-2">           
             <button className="px-4 py-1.5 border border-[rgba(201,168,76,0.2)] text-[rgba(201,168,76,0.6)] text-[12px] tracking-widest uppercase cursor-pointer transition-all duration-200 bg-transparent font-['DM_Sans',sans-serif] hover:border-(--gold) hover:text-(--gold) hover:bg-[rgba(201,168,76,0.06)]">
-              Rizal
-            </button>
-            
-            <button className="px-4 py-1.5 border border-[rgba(201,168,76,0.2)] text-[rgba(201,168,76,0.6)] text-[12px] tracking-widest uppercase cursor-pointer transition-all duration-200 bg-transparent font-['DM_Sans',sans-serif] hover:border-(--gold) hover:text-(--gold) hover:bg-[rgba(201,168,76,0.06)]">
-              Intramuros
+              Fort Santiago
             </button>
 
             <button className="px-4 py-1.5 border border-[rgba(201,168,76,0.2)] text-[rgba(201,168,76,0.6)] text-[12px] tracking-widest uppercase cursor-pointer transition-all duration-200 bg-transparent font-['DM_Sans',sans-serif] hover:border-(--gold) hover:text-(--gold) hover:bg-[rgba(201,168,76,0.06)]">
@@ -54,11 +56,7 @@ const Search = ({ setOpenSearch }) => {
             </button>
 
             <button className="px-4 py-1.5 border border-[rgba(201,168,76,0.2)] text-[rgba(201,168,76,0.6)] text-[12px] tracking-widest uppercase cursor-pointer transition-all duration-200 bg-transparent font-['DM_Sans',sans-serif] hover:border-(--gold) hover:text-(--gold) hover:bg-[rgba(201,168,76,0.06)]">
-              1571
-            </button>
-
-            <button className="px-4 py-1.5 border border-[rgba(201,168,76,0.2)] text-[rgba(201,168,76,0.6)] text-[12px] tracking-widest uppercase cursor-pointer transition-all duration-200 bg-transparent font-['DM_Sans',sans-serif] hover:border-(--gold) hover:text-(--gold) hover:bg-[rgba(201,168,76,0.06)]">
-              Katipunan
+              Gabriela Silang
             </button>
 
             <button className="px-4 py-1.5 border border-[rgba(201,168,76,0.2)] text-[rgba(201,168,76,0.6)] text-[12px] tracking-widest uppercase cursor-pointer transition-all duration-200 bg-transparent font-['DM_Sans',sans-serif] hover:border-(--gold) hover:text-(--gold) hover:bg-[rgba(201,168,76,0.06)]">
