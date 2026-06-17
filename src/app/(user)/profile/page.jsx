@@ -23,12 +23,13 @@ export default function ProfilePage(){
     const [hasPreview, setHasPreview] = useState(false);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [tempImage, setTempImage] = useState("/blank_image.jpg");
 
     //UseRef hooks for inputs
     const textareaRef = useRef(null);
     const inputHeaderRef = useRef(null);
     const fileInputRef = useRef(null);
-    const tempImgHook = useRef("");
+    const tempImgHook = useRef("/blank_image.jpg");
 
     //Renders the specific files of the corresponding user 
     useEffect(() => {
@@ -50,7 +51,12 @@ export default function ProfilePage(){
         fetchData();
     }, []);
     
-    
+    useEffect(() => {
+        if(tempImgHook.current){
+            setTempImage(tempImgHook.current);
+        }
+    }, []);
+
     //fetches data for the newsfeed
     const fetchMoreData = async () => {
         
@@ -220,7 +226,7 @@ export default function ProfilePage(){
                             }
                         }> Exit </button>
                         {
-                            (hasPreview === true) ? (<Image src={tempImgHook.current} width="300" height="200" alt="Preview"/>) : (<Image src={"/blank_image.jpg"} width="300" height="200" alt="Preview"/>)
+                            (hasPreview === true) ? (<Image src={tempImage} width="300" height="200" alt="Preview"/>) : (<Image src={"/blank_image.jpg"} width="300" height="200" alt="Preview"/>)
                         }
                     </div>
                     <div className="flex flex-col">

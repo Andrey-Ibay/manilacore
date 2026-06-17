@@ -6,29 +6,19 @@ import Skeleton from "./Skeleton";
 import { useEffect, useState } from 'react';
 
 export default function NewsFeed(props){
-    const [date, setDate] = useState('');
-    const [hasMore, setHasMore] = useState(true);
-    const [isMounted, setIsMounted] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     
-    useEffect(() =>{
-        if(props.images.length > 0){
-            setIsLoading(false);
-        }
-    }, [props.images]);
+    const [hasMore, setHasMore] = useState(true);
 
-    useEffect(()=>{
-        if(props.imageKey.date){
-            const dateVar = props.imageKey.date;
-            console.log(dateVar);
-            const [year, month, day] = dateVar.split("-");
-            
-            const localDate = new Date(year, month - 1, day);
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = localDate.toLocaleDateString('en-US', options);
-            setDate(formattedDate);
-        }
-    }, [props.imageKey]);
+    
+    const [{date} = {}] = props.imageKey || [];
+    
+    const dateVar = date;
+    console.log(dateVar);
+    const [year, month, day] = dateVar.split("-");
+    
+    const localDate = new Date(year, month - 1, day);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = localDate.toLocaleDateString('en-US', options);
 
     console.log(props.images.length);
     /*
@@ -40,12 +30,6 @@ export default function NewsFeed(props){
     });
     }, [props.imageKey?.date]);*/
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-    
-    if(!isMounted) return null;
-    if(isLoading) return <Skeleton />;
     console.log("Test user object: ", props.images);
     const [{user_name} = {}] = props.images || [];
     console.log("Test props id: ", user_name);
@@ -86,7 +70,7 @@ export default function NewsFeed(props){
                                             <img src={props.imageKey.avatar_url} className="object-cover rounded-full w-10 h-10"/>
                                             <div className="flex-col flex">
                                                 <h1>{props.imageKey.user_name}</h1>
-                                                <p className="text-sm">{date}</p>
+                                                <p className="text-sm">{formattedDate}</p>
                                             </div>
                                         </div>
                                         <div className="flex flex-col justify-center">
