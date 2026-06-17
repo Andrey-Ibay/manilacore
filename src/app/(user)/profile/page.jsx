@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import LogoutButton from "@/components/LogoutButton";
 import NewsFeed from "@/components/sections/NewsFeed";
 import Image from "next/image";
-
+import Skeleton from '@/components/sections/Skeleton';
 import { createClient } from "@/utils/supabase/client";
 import { processWithGemini } from "@/app/actions/processWithGemini";
 import { safetyGuardrail } from '@/app/actions/safetyGuardrail';
@@ -21,13 +21,15 @@ export default function ProfilePage(){
     const [imageKey, setImageKey] = useState({});
     const [images, setImages] = useState([]);
     const [hasPreview, setHasPreview] = useState(false);
+    const [page, setPage] = useState(0);
+    const [loading, setLoading] = useState(true);
 
     //UseRef hooks for inputs
     const textareaRef = useRef(null);
     const inputHeaderRef = useRef(null);
     const fileInputRef = useRef(null);
     const tempImgHook = useRef("");
-    
+
     //Renders the specific files of the corresponding user 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,11 +43,28 @@ export default function ProfilePage(){
                 if(data){
                     setImages(data);
                     setUserInfo(user);
+                    setLoading(false);
                 }
             }
         };
         fetchData();
     }, []);
+    
+    
+    //fetches data for the newsfeed
+    const fetchMoreData = async () => {
+        
+        const { data } = await supabase
+        .from('items')
+        .select('*')
+        .range(page * 2, (page + 1) * 2 - 1);
+
+        if(data){
+            console.log("fetchmoredata function is working");
+            setImages((prev) => [...images, ...data]);
+            setPage((prev) => prev + 1);
+        }
+    };
 
     //For showing a temporary file
     const showPreview = (event) => {
@@ -73,11 +92,24 @@ export default function ProfilePage(){
 
         return filePath;
     }
+
+    const deleteImage = async (id) => {
+        const {data} = await supabase
+            .from("items")
+            .delete()
+            .eq('id', id);
+
+        const updatedItems = images.filter(item => item !== id);
+        setItems(updatedItems);
+    }
     //saves the file from the storage bucket in supabase to the table
     const saveToDatabase = async (filePath, file, desc, head) => {
     
         //passes the image to Gemini Flash 3.5 for processing
-        const geminiCategoryResult = await processWithGemini(file);
+        //UNCOMMENT AFTER POPULATION
+        //const geminiCategoryResult = await processWithGemini(file);
+        const geminiCategoryResult = null;
+
         console.log("Gemini output: ", geminiCategoryResult);
 
         //saves to database
@@ -118,7 +150,10 @@ export default function ProfilePage(){
         formData.append("file", file);
 
         //Gemini 3.1 Flash Lite as Safety guardrail
-        const geminiSafetyCheck = await safetyGuardrail(formData);
+
+        //UNCOMMENT AFTER POPULATION
+        //const geminiSafetyCheck = await safetyGuardrail(formData);
+        const geminiSafetyCheck = true;
 
         //Proceed if it is safe
         if(geminiSafetyCheck){
@@ -130,6 +165,8 @@ export default function ProfilePage(){
                 await saveToDatabase(filePath, file, description, header);
                 console.log("Success");
                 
+                removeFile();
+                setAddCard(false);
                 
             }catch (error){
                 console.error("Upload failed: ", error);
@@ -152,17 +189,27 @@ export default function ProfilePage(){
         fileInputRef.current.value = '';
         setHasPreview(false);
     }
-
+    
     return(
-        <div className="flex w-full h-full justify-center mt-20 pt-20">    
-            <div className="flex items-center flex-col w-[20%]">
-                <div className="flex">
-                    <img src={userInfo?.user_metadata?.avatar_url || "#"} className="rounded-full w-10 h-10" />
-                    <h1>{userInfo?.user_metadata?.full_name || userInfo?.user_metadata?.name || "Loading data..."}</h1>
-                </div>
-                <button className="bg-red-600 w-30" onClick={() => setAddCard(true)}>+ New Post</button>
-                <LogoutButton />
-            </div>
+        <div className="relative flex w-[80%] h-full justify-center mt-20 pt-20">    
+            {
+                !loading ? (<div className="flex items-center flex-col w-[20%] p-10">
+                    <div className="pb-2 flex items-center">
+                        <img src={userInfo?.user_metadata?.avatar_url || "#"} className="rounded-full w-10 h-10 mr-2" />
+                        <h1>{userInfo?.user_metadata?.full_name || userInfo?.user_metadata?.name || <div className="animate-pulse bg-gray-300 h-5 w-20 rounded-2xl"/>}</h1>
+                    </div>
+                    <button className="bg-red-600 w-30" onClick={() => setAddCard(true)}>+ New Post</button>
+                    <LogoutButton />
+                </div>) : (<div className="animate-pulse bg-gray-300 h-[30%] rounded-2xl w-[20%] p-10">
+                    <div className="pb-2 flex items-center">
+                        <div className="animate-pulse bg-gray-400 rounded-full mr-2 w-10 h-10" />
+                        <h1><div className="animate-pulse bg-gray-400 h-5 w-20 rounded-2xl"/></h1>
+                    </div>
+                    <button><div className="animate-pulse bg-gray-400 h-5 w-30 rounded-2xl"/></button>
+                    <button><div className="animate-pulse bg-gray-400 h-5 w-30 rounded-2xl"/></button>
+                    
+                </div>)
+            }
             {
                 
                 addCard && (<div className="absolute flex bg-blue-600 justify-center items-center">
@@ -185,16 +232,20 @@ export default function ProfilePage(){
                     </div>
                 </div>)
             }
-            <NewsFeed 
-                userInfo={userInfo}
-                images={images}
-                getImageUrl={getImageUrl}
-                setOpenedImage={setOpenedImage}
-                setImageKey={setImageKey}
-                imageKey={imageKey}
-                userInfo={userInfo}
-                openedImage={openedImage}
-            />
+            {
+                !loading ? (<NewsFeed 
+                    userInfo={userInfo}
+                    deleteImage={deleteImage}
+                    images={images}
+                    fetchMoreData={fetchMoreData}
+                    getImageUrl={getImageUrl}
+                    setOpenedImage={setOpenedImage}
+                    setImageKey={setImageKey}
+                    imageKey={imageKey}
+                    openedImage={openedImage}
+                    closeCard={closeCard}
+                />) : (<div className="animate-pulse bg-gray-300 h-[80%] rounded-2xl ml-10 w-[80%]"/>)
+            }
         </div>
         
     );
