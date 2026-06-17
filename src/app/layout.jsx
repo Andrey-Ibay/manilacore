@@ -1,4 +1,5 @@
-import "@/app/globals.css";
+import "./globals.css";
+
 import { Playfair_Display, DM_Sans} from "next/font/google";
 
 import NavbarAndSearchAndLoginAndRegisterAndFullDetails from "@/components/Navbar&Search&Login&Register";
@@ -21,7 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full antialiased">
       <head>
-        <link rel="icon" type="image/png" href="@/assets/manila_core-logo.png" />
+        <link rel="icon" type="image/png" href="/assets/manila_core-logo.png" />
       </head>
       <body className="min-h-full flex flex-col font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink) overflow-x-hidden">
         <NavbarAndSearchAndLoginAndRegisterAndFullDetails />   
