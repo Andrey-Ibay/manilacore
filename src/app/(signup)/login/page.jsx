@@ -34,7 +34,7 @@ export default function LoginPage() {
                     prompt: 'select_account',
                 },
             // This tells Google where to send the user back to in the app
-            redirectTo: `${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`,
+            redirectTo: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`,
             },
         });
 
