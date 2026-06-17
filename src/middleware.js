@@ -64,6 +64,9 @@ export async function middleware(request){
             }
         }
     }
+    if(!user && request.nextUrl.pathname.startsWith('/profile')){
+        return NextResponse.redirect(new URL('/login', request.url))
+    }
 
     return response
 
