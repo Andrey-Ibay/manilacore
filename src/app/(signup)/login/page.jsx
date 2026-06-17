@@ -34,7 +34,10 @@ export default function LoginPage() {
                     prompt: 'select_account',
                 },
             // This tells Google where to send the user back to in the app
-            redirectTo: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`,
+            // Hardcoded since faced with conflicts in vercel and oauth routing
+            redirectTo: `https://manilacore.vercel.app/auth/callback`,
+            //Uncomment and FIX THIS ROUTE TO VERCEL after the presentation
+            //redirectTo: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`,
             },
         });
 
