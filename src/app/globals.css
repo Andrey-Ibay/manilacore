@@ -14,7 +14,31 @@
   --section-pad: 90px 60px;
 }
 
+*, *::before, *::after { box-sizing: border-box; }
+
 html {scroll-behavior: smooth;}
+
+/* Scroll Bar */
+::-webkit-scrollbar { 
+  width: 5px; height: 5px; 
+}
+::-webkit-scrollbar-track { 
+  background: var(--ink) !important; 
+}
+::-webkit-scrollbar-thumb { 
+  background: linear-gradient(180deg, var(--gold-dark) 0%, var(--gold) 60%, var(--gold-dark) 100%); 
+  border-radius: 200px; 
+  border: 1px solid rgba(201,168,76,0.3);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+::-webkit-scrollbar-corner { 
+  background: var(--ink); 
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 5px !important; height: 5px; 
+  border-radius: 300px !important;
+}
 
 /* Scroll Sign Animation */
 @theme {
@@ -27,12 +51,43 @@ html {scroll-behavior: smooth;}
       transform:translateX(-50%) translateY(6px)
     } 
   }
+
+  --animate-modalSlideIn: modalSlideIn 0.35s ease;
+  @keyframes modalSlideIn {
+    from { transform: translateY(20px) scale(0.98); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  --animate-spin: spin 0.7s linear infinite;
+  @keyframes spin { 
+    to { transform: rotate(360deg); } 
+  }
+
+  --animate-detailSlideIn: detailSlideIn 0.38s cubic-bezier(0.16,1,0.3,1);
+  @keyframes detailSlideIn {
+    from { transform: translateY(40px) scale(0.96); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
+  }
 }
 
 .open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
 .open span:nth-child(2) { opacity: 0; }
 .open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
-.mobile-menu-open {
-  transform: translateY(27); opacity: 1; pointer-events: all;
-}
+.mobile-menu-open { transform: translateY(27); opacity: 1; pointer-events: all; }
+
+.active { color: var(--ink); border-bottom-color: var(--gold); }
+
+/* Slight random tilts applied via nth-child */
+.polaroid:nth-child(3n+1) { transform: rotate(-1.2deg); }
+.polaroid:nth-child(3n+2) { transform: rotate(0.8deg); }
+.polaroid:nth-child(3n+3) { transform: rotate(-0.5deg); }
+.polaroid:nth-child(3n+1):hover { transform: rotate(0deg) translateY(-6px) scale(1.02); }
+.polaroid:nth-child(3n+2):hover { transform: rotate(0deg) translateY(-6px) scale(1.02); }
+.polaroid:nth-child(3n+3):hover { transform: rotate(0deg) translateY(-6px) scale(1.02); }
+
+.detail-card::-webkit-scrollbar { width: 4px; }
+.detail-card::-webkit-scrollbar-track { background: transparent; }
+.detail-card::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 99px; }
+.detail-card::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+.detail-card::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
