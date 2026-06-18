@@ -218,7 +218,7 @@ export default function ProfilePage(){
             }
             {
                 
-                addCard && (<div className="absolute flex bg-blue-600 justify-center items-center">
+                addCard && (<div className="absolute flex bg-white rounded-2xl justify-center items-center">
                     <div>
                         <button onClick={() => {
                             setAddCard(false);
