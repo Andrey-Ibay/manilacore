@@ -75,7 +75,7 @@ export default function NewsFeed(props){
                             </div>)
                         }
                         {
-                            (props.userInfo.user_metadata.full_name != props.imageKey.user_name) && props.openedImage && (<div className="absolute flex-col top-1 left-1 bg-blue-600">
+                            (props.userInfo.user_metadata.full_name != props.imageKey.user_name) && props.openedImage && (<div className="absolute flex-col top-1 left-1 bg-white rounded-2xl">
                                 <button onClick={() => props.setOpenedImage(false)}>Exit</button>
                                 <div className="flex flex-row p-4">
                                     <div className="flex justify-center items-center">
