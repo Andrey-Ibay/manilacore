@@ -17,6 +17,6 @@ export default function LogoutButton(){
     }
     
     return(
-        <button onClick={handleLogout}>Log out</button>
+        <button className="bg-white-400 rounded-l p-4" onClick={handleLogout}>Log out</button>
     );
 }

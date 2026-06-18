@@ -160,6 +160,7 @@ export default function ProfilePage(){
         //UNCOMMENT AFTER POPULATION
         const geminiSafetyCheck = await safetyGuardrail(formData);
 
+
         //Proceed if it is safe
         if(geminiSafetyCheck){
             try{
@@ -196,14 +197,14 @@ export default function ProfilePage(){
     }
     
     return(
-        <div className="relative flex w-[80%] h-full justify-center mt-20 pt-20 h-screen relative flex flex-col justify-end px-15 py-20 bg-(--ink) overflow-hidden max-[900px]:px-6! max-[900px]:py-15!">    
+        <div className="relative flex w-[80%] h-full justify-center mt-20 pt-20 bg-(--ink) overflow-hidden max-[900px]:px-6! max-[900px]:py-15!">    
             {
                 !loading ? (<div className="flex items-center flex-col w-[20%] p-10">
-                    <div className="pb-2 flex items-center">
+                    <div className="pb-2 bg-white-400 rounded-l flex items-center">
                         <img src={userInfo?.user_metadata?.avatar_url || "#"} className="rounded-full w-10 h-10 mr-2" />
                         <h1>{userInfo?.user_metadata?.full_name || userInfo?.user_metadata?.name || <div className="animate-pulse bg-gray-300 h-5 w-20 rounded-2xl"/>}</h1>
                     </div>
-                    <button className="bg-red-600 w-30" onClick={() => setAddCard(true)}>+ New Post</button>
+                    <button className="bg-white-400 rounded-l p-4 w-30" onClick={() => setAddCard(true)}>+ New Post</button>
                     <LogoutButton />
                 </div>) : (<div className="animate-pulse bg-gray-300 h-[30%] rounded-2xl w-[20%] p-10">
                     <div className="pb-2 flex items-center">
