@@ -25,7 +25,7 @@ export default function NewsFeed(props){
     console.log("Test auth id: ", props.userInfo.user_metadata.full_name);
     return(
         <div className="static flex items-center w-[80%] ml-10 justify-center">
-                <div className="static h-screen w-full overflow-y-auto bg-red-500">
+                <div className="static h-screen w-full overflow-y-auto">
                     <InfiniteScroll
                         dataLength={props.images.length}
                         next={props.fetchMoreData}
@@ -48,7 +48,7 @@ export default function NewsFeed(props){
                     </InfiniteScroll>
                     <div className="flex justify-center items-center">
                         {
-                            (props.userInfo.user_metadata.full_name == props.imageKey.user_name) && props.openedImage && (<div className="absolute flex-col top-1 left-1 bg-blue-600">
+                            (props.userInfo.user_metadata.full_name == props.imageKey.user_name) && props.openedImage && (<div className="absolute flex-col top-1 left-1 bg-white rounded-2xl p-4">
                                 <button onClick={() => props.setOpenedImage(false)}>Exit</button>
                                 <div className="flex flex-row p-4">
                                     <div className="flex justify-center items-center">
@@ -75,7 +75,7 @@ export default function NewsFeed(props){
                             </div>)
                         }
                         {
-                            (props.userInfo.user_metadata.full_name != props.imageKey.user_name) && props.openedImage && (<div className="absolute flex-col top-1 left-1 bg-blue-600">
+                            (props.userInfo.user_metadata.full_name != props.imageKey.user_name) && props.openedImage && (<div className="absolute flex-col top-1 left-1 bg-white rounded-2xl p-4">
                                 <button onClick={() => props.setOpenedImage(false)}>Exit</button>
                                 <div className="flex flex-row p-4">
                                     <div className="flex justify-center items-center">
