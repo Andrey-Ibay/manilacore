@@ -25,7 +25,7 @@ export default function NewsFeed(props){
     console.log("Test auth id: ", props.userInfo.user_metadata.full_name);
     return(
         <div className="static flex items-center w-[80%] ml-10 justify-center">
-                <div className="static h-screen w-full overflow-y-auto bg-red-500">
+                <div className="static h-screen w-full overflow-y-auto">
                     <InfiniteScroll
                         dataLength={props.images.length}
                         next={props.fetchMoreData}

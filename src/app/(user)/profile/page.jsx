@@ -113,8 +113,7 @@ export default function ProfilePage(){
     
         //passes the image to Gemini Flash 3.5 for processing
         //UNCOMMENT AFTER POPULATION
-        //const geminiCategoryResult = await processWithGemini(file);
-        const geminiCategoryResult = null;
+        const geminiCategoryResult = await processWithGemini(file);
 
         console.log("Gemini output: ", geminiCategoryResult);
 
@@ -159,8 +158,7 @@ export default function ProfilePage(){
         //Gemini 3.1 Flash Lite as Safety guardrail
 
         //UNCOMMENT AFTER POPULATION
-        //const geminiSafetyCheck = await safetyGuardrail(formData);
-        const geminiSafetyCheck = true;
+        const geminiSafetyCheck = await safetyGuardrail(formData);
 
         //Proceed if it is safe
         if(geminiSafetyCheck){
@@ -198,7 +196,7 @@ export default function ProfilePage(){
     }
     
     return(
-        <div className="relative flex w-[80%] h-full justify-center mt-20 pt-20">    
+        <div className="relative flex w-[80%] h-full justify-center mt-20 pt-20 h-screen relative flex flex-col justify-end px-15 py-20 bg-(--ink) overflow-hidden max-[900px]:px-6! max-[900px]:py-15!">    
             {
                 !loading ? (<div className="flex items-center flex-col w-[20%] p-10">
                     <div className="pb-2 flex items-center">
