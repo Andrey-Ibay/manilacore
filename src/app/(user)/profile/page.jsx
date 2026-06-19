@@ -20,6 +20,8 @@ export default function ProfilePage(){
     const [openedImage, setOpenedImage] = useState(false);
     const [imageKey, setImageKey] = useState({});
     const [images, setImages] = useState([]);
+    const [filterCat, setFilterCat] = useState([]);
+    const [filterSubCat, setFilterSubCat] = useState([]);
     const [hasPreview, setHasPreview] = useState(false);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -37,25 +39,59 @@ export default function ProfilePage(){
             console.log("useEffect started.")
             const { data: { user }} = await supabase.auth.getUser();
             if(user){
-                const { data } = await supabase
+                const { data: allData } = await supabase
                     .from('items')
                     .select('*')
-                
-                if(data){
-                    setImages(data);
+
+                if(allData){
+                    setImages(allData);
                     setUserInfo(user);
                     setLoading(false);
+                                
+                }
+            }
+        };
+        fetchData();
+    }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            console.log("useEffect started.")
+            const { data: { user }} = await supabase.auth.getUser();
+            if(user){
+                
+                const { data: allCategories } = await supabase
+                    .from('categories')
+                    .select('*')
+
+                if(allCategories){
+                    const filt = allCategories.filter(row => row.parent_id === null);
+                    setFilterCat(filt);
+                                
                 }
             }
         };
         fetchData();
     }, []);
     
-    useEffect(() => {
-        if(tempImgHook.current){
-            setTempImage(tempImgHook.current);
-        }
-    }, []);
+    console.log("Initialtest cat Filtered Category: ", filterCat);
+
+
+    const settingImages = (setimg) => {
+        setImages(setimg);
+    }
+    const catFilter = (cat) => {
+        setFilterCat(cat);
+    }
+    const subCatFilter = (cat) => {
+        setFilterSubCat(cat);
+    }
+    
+
+    const dateVar = imageKey?.date; 
+
+    const formattedDate = dateVar 
+    ? new Date(dateVar.split("-")[0], dateVar.split("-")[1] - 1, dateVar.split("-")[2]).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    : "No date available";
 
     //fetches data for the newsfeed
     const fetchMoreData = async () => {
@@ -77,7 +113,7 @@ export default function ProfilePage(){
         const file = event.target.files[0];
         if(file){
             tempImgHook.current = URL.createObjectURL(file);
-            setHasPreview(true);
+            setTempImage(tempImgHook.current);
         }
     }
     //Uploads image to storage bucket.
@@ -197,7 +233,8 @@ export default function ProfilePage(){
     }
     
     return(
-        <div className="relative flex h-full justify-center mt-20 pt-20 bg-(--ink) max-[900px]:px-6! max-[900px]:py-15!">    
+        <div className="relative flex h-full justify-center pt-40 bg-(--ink) max-[900px]:px-6! max-[900px]:py-15!">    
+
             {
                 !loading ? (<div className="flex items-center flex-col w-[20%] p-4">
                     <div className="pb-2 text-white flex items-center">
@@ -225,9 +262,7 @@ export default function ProfilePage(){
                             removeFile();
                             }
                         }> Exit </button>
-                        {
-                            (hasPreview === true) ? (<Image src={tempImage} width="300" height="200" alt="Preview"/>) : (<Image src={"/blank_image.jpg"} width="300" height="200" alt="Preview"/>)
-                        }
+                        <Image src={tempImage} width="300" height="200" alt="Preview"/>
                     </div>
                     <div className="flex flex-col">
                         <input type="file" onChange={showPreview} ref={fileInputRef}/>
@@ -238,19 +273,77 @@ export default function ProfilePage(){
                     </div>
                 </div>)
             }
+                
             {
-                !loading ? (<NewsFeed 
+                !loading ? (
+                <NewsFeed 
                     userInfo={userInfo}
                     deleteImage={deleteImage}
                     images={images}
+                    settingImages={settingImages}
+                    filterCat={filterCat}
+                    filterSubCat={filterSubCat}
+                    catFilter={catFilter}
+                    subCatFilter={subCatFilter}
                     fetchMoreData={fetchMoreData}
                     getImageUrl={getImageUrl}
                     setOpenedImage={setOpenedImage}
                     setImageKey={setImageKey}
-                    imageKey={imageKey}
-                    openedImage={openedImage}
-
+                    loading={loading}
                 />) : (<div className="animate-pulse bg-gray-300 h-[80%] rounded-2xl ml-10 w-[80%]"/>)
+            }
+            {
+                !loading ? ((userInfo.user_metadata.full_name == imageKey.user_name) && openedImage && (<div className="absolute flex-col bg-white rounded-2xl p-4">
+                    <button onClick={() => setOpenedImage(false)}>Exit</button>
+                    <div className="flex flex-row p-4">
+                        <div className="flex justify-center items-center">
+                            <img src={getImageUrl(imageKey.image_path)} className="object-cover rounded-2xl w-50 h-50"/>
+                        </div>
+                        <div className="flex flex-col w-80 p-8">
+                            <div className="flex mb-6 items-center">
+                                <img src={imageKey.avatar_url} className="object-cover rounded-full w-10 h-10"/>
+                                <div className="flex-col flex">
+                                    <h1>{imageKey.user_name}</h1>
+                                    <p className="text-sm">{formattedDate}</p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col justify-center">
+                                <h2>{imageKey.headers}</h2>
+                                <p>{imageKey.description}</p>
+                            </div>
+                            <button onClick={() => {
+                                deleteImage(imageKey.id);
+                                setOpenedImage(false);
+                                }}>Delete Image</button>
+                        </div>
+                    </div>
+                </div>)) : (<div className="absolute animate-pulse flex-col top-1 left-1 bg-white rounded-2xl p-4" />)
+            }
+            {
+                !loading ? ((userInfo.user_metadata.full_name != imageKey.user_name) && openedImage && (<div className="absolute flex-col bg-white rounded-2xl p-4">
+                    <button onClick={() => setOpenedImage(false)}>Exit</button>
+                    <div className="flex flex-row p-4">
+                        <div className="flex justify-center items-center">
+                            <img src={getImageUrl(imageKey.image_path)} className="object-cover rounded-2xl w-50 h-50"/>
+                        </div>
+                        <div className="flex flex-col w-80 p-8">
+                            <div className="flex mb-6 items-center">
+                                <img src={imageKey.avatar_url} className="object-cover rounded-full w-10 h-10"/>
+                                <div className="flex-col flex">
+                                    <h1>{imageKey.user_name}</h1>
+                                    <p className="text-sm">{formattedDate}</p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col justify-center">
+                                <h2>{imageKey.headers}</h2>
+                                <p>{imageKey.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                </div>)) : (<div className="absolute animate-pulse flex-col bg-white rounded-2xl p-4" />)
             }
         </div>
         

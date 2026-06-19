@@ -1,27 +1,18 @@
-<<<<<<< HEAD
-import { Geist, Geist_Mono } from "next/font/google";
-=======
+
 import { Playfair_Display, DM_Sans} from "next/font/google";
->>>>>>> 1507fe8ad5741eb007334c3b457c396e8b89e42c
 import SidePanelAdmin from "@/components/admin/SidePanelAdmin";
 import LogoutButton from "@/components/LogoutButton";
 import "@/app/globals.css";
 import { createClient } from "@/utils/supabase/server";
 
-<<<<<<< HEAD
-const geistSans = Geist({
-=======
+
 const playfairDisplay = Playfair_Display({
->>>>>>> 1507fe8ad5741eb007334c3b457c396e8b89e42c
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-<<<<<<< HEAD
-const geistMono = Geist_Mono({
-=======
+
 const dmSans = DM_Sans({
->>>>>>> 1507fe8ad5741eb007334c3b457c396e8b89e42c
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
@@ -31,10 +22,6 @@ export const metadata = {
   description: "Dashboard for Local Culture and Heritage Preservation Management",
 };
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 1507fe8ad5741eb007334c3b457c396e8b89e42c
 export default async function Admin({children}){
   const supabase = await createClient();
   const {data : { user }} = await supabase.auth.getUser();
@@ -48,17 +35,6 @@ export default async function Admin({children}){
       
       <html
       lang="en"
-<<<<<<< HEAD
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      >
-      <body className="min-h-full flex flex-col">
-          <h1>This is a navbar for admin</h1>
-          <LogoutButton />
-          <div className="flex flex-row">
-            <SidePanelAdmin name={admin?.username}/>
-            {children}
-          </div>
-=======
       className={`${playfairDisplay.variable} ${dmSans.variable} h-full antialiased`}
       >
       <body className="min-h-screen bg-[#140c08] text-white overflow-hidden">
@@ -89,7 +65,6 @@ export default async function Admin({children}){
             {children}
           </main>
         </div>
->>>>>>> 1507fe8ad5741eb007334c3b457c396e8b89e42c
       </body>
       </html>
   );
