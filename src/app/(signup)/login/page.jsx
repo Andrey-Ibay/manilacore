@@ -1,6 +1,7 @@
 'use client';
 import { createClient } from "@/utils/supabase/client";
 import { useState } from 'react';
+import LoginAndRegister from "@/components/components_function/login_register"
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -45,13 +46,19 @@ export default function LoginPage() {
             console.error("Google Login Error:", error.message);
         }
     };
+    
     return (
-        <>
+        <div className = "flex justify-center items-center">
+            <div className= " flex flex-col justify-center items-center">
+                
+
             <input type="email" onChange={(e) => setEmail(e.target.value)} />
             <input type="password" onChange={(e) => setPassword(e.target.value)} />
             <button onClick={handleLogin}>Login</button>
             <button onClick={handleGoogleLogin}>Sign up with Google</button>
             <Link href={"/"}>Back to Home</Link>
-        </>
+
+            </div>
+        </div>
     )
-}
+}   

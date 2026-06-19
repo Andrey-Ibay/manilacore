@@ -3,10 +3,12 @@
 import Link from 'next/link';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-const NavBar = ({ setOpenSearch, setToggleForm }) => {
+const NavBar = ({ setToggleForm }) => {
   /* Mobile Menu Toggle Logic */
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const router = useRouter()
 
   const toggleMobileMenu = () => {
     !mobileMenuOpen ? setMobileMenuOpen(true) : setMobileMenuOpen(false);
@@ -69,16 +71,8 @@ const NavBar = ({ setOpenSearch, setToggleForm }) => {
         </button>
 
         <div className="flex items-center gap-2.5 relative">
-          {/* SEARCH BUTTON */}
-          <button className="bg-transparent border border-[rgba(201,168,76,0.35)] text-white/70 cursor-pointer flex items-center gap-2 px-4 py-2 font-['DM_Sans',sans-serif] text-[13px] tracking-[0.08em] transition-colors duration-200 hover:border-(--gold) hover:text-(--gold) hover:bg-[rgba(201,168,76,0.06)] max-[900px]:px-2.5 max-[900px]:py-2" aria-label="Search" onClick={() => setOpenSearch(true)}>
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/ ></svg>
 
-            <span className="max-[900px]:hidden">
-              Search
-            </span>
-          </button>
-
-          <button className="bg-(--gold) border-0 text-(--ink) cursor-pointer flex items-center gap-2 px-4.5 py-2 font-['DM_Sans',sans-serif] text-[13px] font-medium tracking-[0.08em] transition-all duration-200 hover:bg-(--gold-light) hover:-translate-y-px max-[900px]:px-2.5 max-[900px]:py-2" id="nav-login-btn" aria-label="Log in" onClick={() => setToggleForm(true)}>
+          <button className="bg-(--gold) border-0 text-(--ink) cursor-pointer flex items-center gap-2 px-4.5 py-2 font-['DM_Sans',sans-serif] text-[13px] font-medium tracking-[0.08em] transition-all duration-200 hover:bg-(--gold-light) hover:-translate-y-px max-[900px]:px-2.5 max-[900px]:py-2" id="nav-login-btn" aria-label="Log in" onClick={() => router.push('/login')}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.75 h-3.75 shrink-0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
 
             <span className="max-[900px]:hidden">
@@ -134,10 +128,6 @@ const NavBar = ({ setOpenSearch, setToggleForm }) => {
           </ul>
 
           <div className="flex gap-2.5 pt-1">
-            <button className="flex-1 flex items-center justify-center gap-2 p-3 font-['DM_Sans',sans-serif] text-[13px] tracking-[0.08em] uppercase cursor-pointer transition-all duration-200 bg-transparent border border-[rgba(201,168,76,0.35)] text-white/70 hover:border-(--gold) hover:text-(--gold)" onClick={() => setOpenSearch(true)}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              Search
-            </button>
 
             <button className="flex-1 flex items-center justify-center gap-2 p-3 font-['DM_Sans',sans-serif] text-[13px] tracking-[0.08em] uppercase cursor-pointer transition-all duration-200 border-[rgba(201,168,76,0.35)] hover:border-(--gold) bg-(--gold) border-0 text-(--ink) font-medium hover:bg-(--gold-light)" id="mobile-login-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

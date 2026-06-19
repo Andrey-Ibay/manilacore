@@ -1,13 +1,16 @@
+
 import { Playfair_Display, DM_Sans} from "next/font/google";
 import SidePanelAdmin from "@/components/admin/SidePanelAdmin";
 import LogoutButton from "@/components/LogoutButton";
 import "@/app/globals.css";
 import { createClient } from "@/utils/supabase/server";
 
+
 const playfairDisplay = Playfair_Display({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+
 
 const dmSans = DM_Sans({
   variable: "--font-geist-mono",
