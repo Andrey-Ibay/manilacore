@@ -31,33 +31,13 @@ export default async function Admin({children}){
       
       <html
       lang="en"
-      className={`h-full antialiased`}
+      className={`h-full antialiased ${dmSans.className} scroll-smooth`}
       >
-      <body className="min-h-screen bg-[#140c08] text-white overflow-hidden">
-        <header className="h-20 border-b border-[#3a2818] flex items-center justify-between px-10">
-          <div>
-            <h1 className="text-3xl font-serif text-[#c9a54c]">
-              Maynila
-            </h1>
-
-            <p className="text-sm italic text-white/70">
-              Admin Panel
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <span className="text-white/70">
-              Welcome, {admin?.username}
-            </span>
-
-            <LogoutButton />
-          </div>
-        </header>
-
-        <div className="flex h-[calc(100vh-80px)]">
+      <body className="font-['DM_Sans',sans-serif] bg-(--cream) text-(--ink) min-h-screen m-0 p-0 box-border">
+        <div className="flex min-h-screen">
           <SidePanelAdmin name={admin?.username} />
 
-          <main className="flex-1 overflow-y-auto p-10">
+          <main className="flex-1">
             {children}
           </main>
         </div>
