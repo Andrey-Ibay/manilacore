@@ -1,13 +1,11 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Playfair_Display, DM_Sans } from "next/font/google";
 import "@/app/globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const playfair = Playfair_Display({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmSans = DM_Sans({
   subsets: ["latin"],
 });
 
@@ -23,10 +21,9 @@ export default async function Login({children}){
       
       <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={` h-full antialiased`}
       >
       <body className="min-h-full min-w-ff flex flex-col">
-          <h1>This is a navbar for admin</h1>
           <div className="flex flex-row">
             {children}
           </div>
