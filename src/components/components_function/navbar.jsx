@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const NavBar = ({ setToggleForm }) => {
+const NavBar = () => {
   /* Mobile Menu Toggle Logic */
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter()

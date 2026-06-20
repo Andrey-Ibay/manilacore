@@ -5,15 +5,11 @@ import LogoutButton from "@/components/LogoutButton";
 import "@/app/globals.css";
 import { createClient } from "@/utils/supabase/server";
 
-
-const playfairDisplay = Playfair_Display({
-  variable: "--font-geist-sans",
+const playfair = Playfair_Display({
   subsets: ["latin"],
 });
 
-
 const dmSans = DM_Sans({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -35,7 +31,7 @@ export default async function Admin({children}){
       
       <html
       lang="en"
-      className={`${playfairDisplay.variable} ${dmSans.variable} h-full antialiased`}
+      className={`h-full antialiased`}
       >
       <body className="min-h-screen bg-[#140c08] text-white overflow-hidden">
         <header className="h-20 border-b border-[#3a2818] flex items-center justify-between px-10">
