@@ -681,6 +681,54 @@ export default function LoginPage() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Terms and Privacy */}       
+                    <div id="legal-modal" className={`fixed inset-0 z-400 bg-[rgba(5,3,1,0.88)] backdrop-blur-[10px] items-center justify-center p-6 opacity-100 flex transition-opacity duration-300`}>
+                        <div className="bg-(--cream) max-w-160 w-full max-h-[82vh] flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.6)] animate-detailSlideIn">
+                            <div className="shrink-0 bg-(--ink) px-9 pt-7 pb-6 relative border-b-2 border-(--gold)">
+                                <button className="absolute top-4.5 right-4.5 w-8 h-8 rounded-full bg-[rgba(255,255,255,0.06)] border border-[rgba(201,168,76,0.25)] text-white/60 cursor-pointer flex items-center justify-center transition-[background,color,transform] duration-200 hover:bg-[rgba(201,168,76,0.2)] hover:text-(--gold) hover:rotate-90"  aria-label="Close" onClick={() => openLegal(false)}>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                </button>
+
+                                <div className="w-9.5 h-9.5 bg-[rgba(201,168,76,0.12)] border border-[rgba(201,168,76,0.3)] rounded-full flex items-center justify-center mb-3.5 text-(--gold)" id="legal-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4.5 h-4.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                </div>
+
+                                <div className="font-['Playfair_Display',serif] text-[24px] font-bold text-white mb-1.5" id="legal-title">
+                                    Terms of Service
+                                </div>
+
+                                <div className="text-[12px] text-white/40 tracking-[0.06em]" id="legal-sub">
+                                    Maynila Heritage Portal
+                                </div>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto px-9 pt-7 pb-8" id="legal-body">
+                                <div class="legal-updated">
+                                    Last updated: June 2026
+                                </div>
+                                
+                                ${data.sections.map((s, i) => `
+                                <div class="legal-section">
+                                    <div class="legal-section-title">
+                                    <span class="legal-section-num">${i + 1}</span>
+                                    ${s.title}
+                                    </div>
+                                    <div class="legal-section-text">${s.body}</div>
+                                </div>
+                            </div>
+
+                            <div className="shrink-0 px-9 py-4.5 border-t border-(--border) flex justify-end gap-2.5">
+                                <button className="text-[12px] text-(--warm-gray) bg-transparent border-0 cursor-pointer underline underline-offset-2 font-['DM_Sans',sans-serif] mr-auto self-center transition-colors duration-200 hover:text-(--gold-dark)" id="legal-switch">
+                                    View Privacy Policy →
+                                </button>
+
+                                <button className="py-2.75 px-7 bg-(--gold) border-0 cursor-pointer font-['DM_Sans',sans-serif] text-[12px] font-medium tracking-widest uppercase text-(--ink) transition-colors duration-200 hover:bg-(--gold-light)">
+                                    I Understand
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

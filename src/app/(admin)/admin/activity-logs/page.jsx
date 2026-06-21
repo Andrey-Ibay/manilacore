@@ -45,9 +45,9 @@ export default function ActivityLogsPage(){
 
     if (search) {
         rows = rows.filter(item => 
-            item.title.toLowerCase().includes(search) ||
-            item.desc.toLowerCase().includes(search) ||
-            item.user.toLowerCase().includes(search)
+            item.title.toLowerCase().includes(search.toLowerCase()) ||
+            item.desc.toLowerCase().includes(search.toLowerCase()) ||
+            item.user.toLowerCase().includes(search.toLowerCase())
         );
     }
 
@@ -131,33 +131,37 @@ export default function ActivityLogsPage(){
 
                             <tbody className="last:border-b-0 border-b border-(--border) transition-[background] duration-150" id="activity-table-body">
                                 {rows.length === 0 ? (
-                                    <div className="text-center py-17.5 px-5 text-(--warm-gray)">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12 text-[rgba(140,123,107,0.3)] mb-4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                    <tr>
+                                        <td colSpan={5} className="text-center py-17.5 px-5 text-(--warm-gray)">
+                                            <div className="flex flex-col items-center justify-center">
+                                                <svg
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    className="w-12 h-12 text-[rgba(140,123,107,0.3)] mb-4"
+                                                >
+                                                    <circle cx="11" cy="11" r="8" />
+                                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                                </svg>
 
-                                        <div className="font-['Playfair_Display',serif] text-[18px] text-(--ink) mb-1.5">
-                                            No activity found
-                                        </div>
+                                                <div className="font-['Playfair_Display',serif] text-[18px] text-(--ink) mb-1.5">
+                                                    No activity found
+                                                </div>
 
-                                        <div className="text-[13px]">
-                                            Try adjusting your filters or search term.
-                                        </div>
-                                    </div>
-                                    ) : 
+                                                <div className="text-[13px]">
+                                                    Try adjusting your filters or search term.
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
                                     rows.map((row, i) => (
-                                        <ActLogsRows 
-                                            key={i} 
-                                            time={row.time}
-                                            date={row.date}
-                                            title={row.title}
-                                            desc={row.desc}
-                                            color={row.color}
-                                            initials={row.initials}
-                                            user={row.user}
-                                            action={row.action}
-                                            /> 
-                                        )
-                                    )
-                                }
+                                    <ActLogsRows key={i} {...row} />
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>

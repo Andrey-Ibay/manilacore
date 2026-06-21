@@ -3,7 +3,38 @@
 import React, { useState } from "react";
 
 export default function RecyclingBinPage(){
-    
+    let isSuper = false;
+
+    let recyclingBin = [
+        {   id: 101, 
+            title: 'Spam content: Fake ticket giveaway', 
+            desc: 'Promotional spam unrelated to Manila heritage, flagged by 5 users.', 
+            deletedBy: 'Gester Calvo', 
+            initials: 'CM', 
+            color: 'bg-[#1d3557]', 
+            date: 'Jun 17, 2026 · 6:21 PM' 
+        },
+        {   id: 102, 
+            title: 'Duplicate comment thread', 
+            desc: 'Identical comment posted 4 times on the Sinigang dish page.', 
+            deletedBy: 'Jeshaeki Dizon', 
+            initials: 'RV', 
+            color: 'bg-[#5c4a1e]', 
+            date: 'Jun 16, 2026 · 11:59 AM' 
+        },
+    ]
+
+    const [search, setSearch] = useState("");
+
+    let rows = recyclingBin;
+
+    if (search) {
+    rows = rows.filter(item =>
+      item.title.toLowerCase().includes(search.toLowerCase()) ||
+      item.desc.toLowerCase().includes(search.toLowerCase()) ||
+      item.deletedBy.toLowerCase().includes(search.toLowerCase())
+    );
+  }
     return(
         <>
 
@@ -16,6 +47,16 @@ export default function RecyclingBinPage(){
 
                         <div className="text-[13px] text-(--warm-gray) mt-0.5" id="page-sub">
                             Track every post, edit, and deletion made by the community
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3.5">
+                        <div className="flex items-center gap-2 bg-white border border-(--border) py-2 px-3.5 min-w-55">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-(--warm-gray) shrink-0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+
+                            <input type="text" id="search-input" placeholder="Search logs..." className="border-0 outline-none bg-transparent font-['DM_Sans',sans-serif] text-[13px] w-full placeholder:text-[rgba(140,123,107,0.5)]" 
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}/>
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 export default function SidePanelAdmin(){
-    const [active, setActive] = useState("dashboard");
+    const [active, setActive] = useState("act-logs");
 
     return(
        <>
@@ -37,13 +37,15 @@ export default function SidePanelAdmin(){
 
             <nav className="flex-1 py-6 px-4 overflow-y-auto">
                 <div className="text-[10px] tracking-[0.18em] uppercase text-white/25 px-3 mb-2.5 mt-5.5 first:mt-0">
-                    Overview
+                    {/*Overview*/}
                 </div>
 
+                {/*    
                 <Link href={'/admin'} className={`flex items-center gap-3 py-2.75 px-3.5 mb-0.5 rounded-sm cursor-pointer text-[13.5px] border  transition-[background,color,border-color] duration-200 ${active === "dashboard" ? "bg-[rgba(201,168,76,0.1)] text-(--gold) border-[rgba(201,168,76,0.3)]" : "text-white/60 border-transparent hover:bg-[rgba(201,168,76,0.06)] hover:text-white/90"}`} onClick={() => setActive("dashboard")}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 shrink-0"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
                     Dashboard
                 </Link>
+                */} 
 
                 <div className="text-[10px] tracking-[0.18em] uppercase text-white/25 px-3 mb-2.5 mt-5.5 first:mt-0">
                     Moderation

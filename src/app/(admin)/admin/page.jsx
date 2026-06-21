@@ -1,9 +1,9 @@
-
+import ActivityLogsPage from "./activity-logs/page";
 
 export default function AdminPage(){
     return(
         <>
-        This is admin
+            <ActivityLogsPage />
         </>
     );
 }
