@@ -373,7 +373,7 @@ export default function LoginPage() {
                             </p>
                             </div>
 
-                            <button className="w-full px-4 py-3 bg-white border border-black/20 cursor-pointer font-sans text-[14px] font-medium text-[#3c4043] flex items-center justify-center gap-3 transition-colors duration-150 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:bg-[#f8f8f8] hover:shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
+                            <button className="w-full px-4 py-3 bg-white border border-black/20 cursor-pointer font-sans text-[14px] font-medium text-[#3c4043] flex items-center justify-center gap-3 transition-colors duration-150 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:bg-[#f8f8f8] hover:shadow-[0_2px_8px_rgba(0,0,0,0.12)]" onClick={handleGoogleLogin}>
                             <Image src="/assets/google_logo.png" alt="Google" className="w-3.75 h-3.75 shrink-0" width={20} height={20}/>
                             Continue with Google
                             </button>
