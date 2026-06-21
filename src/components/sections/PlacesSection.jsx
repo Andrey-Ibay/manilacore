@@ -167,9 +167,9 @@ const PlacesSection = ({ setToggleFullDetails, setDetailSlide, setFullData }) =>
             </p>
 
             <div className="mt-5">
-              <Link href="#" className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)" onClick={() => updateFullData(0)}>
+              <button className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)  cursor-pointer" onClick={() => updateFullData(0)}>
                 Read More
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -191,9 +191,9 @@ const PlacesSection = ({ setToggleFullDetails, setDetailSlide, setFullData }) =>
             </p>
 
             <div className="mt-5">
-              <Link href="#" className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)" onClick={() => updateFullData(1)}>
+              <button className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light) cursor-pointer" onClick={() => updateFullData(1)}>
                 Read More
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -216,9 +216,9 @@ const PlacesSection = ({ setToggleFullDetails, setDetailSlide, setFullData }) =>
             </p>
 
             <div className="mt-5">
-              <Link href="#" className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)" onClick={() => updateFullData(2)}>
+              <button className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)  cursor-pointer" onClick={() => updateFullData(2)}>
                 Read More
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -241,9 +241,9 @@ const PlacesSection = ({ setToggleFullDetails, setDetailSlide, setFullData }) =>
             </p>
 
             <div className="mt-5">
-              <Link href="#" className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)" onClick={() => updateFullData(3)}>
+              <button  className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)  cursor-pointer" onClick={() => updateFullData(3)}>
                 Read More
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -265,9 +265,9 @@ const PlacesSection = ({ setToggleFullDetails, setDetailSlide, setFullData }) =>
             </p>
 
             <div className="mt-5">
-              <Link href="#" className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)" onClick={() => updateFullData(4)}>
+              <button className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)  cursor-pointer" onClick={() => updateFullData(4)}>
                 Read More
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -289,9 +289,9 @@ const PlacesSection = ({ setToggleFullDetails, setDetailSlide, setFullData }) =>
             </p>
 
             <div className="mt-5">
-              <Link href="#" className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)" onClick={() => updateFullData(5)}>
+              <button className="text-[12px] tracking-[0.12em] uppercase no-underline flex items-center gap-2 text-(--gold) after:content-['→'] hover:text-(--gold-light)  cursor-pointer" onClick={() => updateFullData(5)}>
                 Read More
-              </Link>
+              </button>
             </div>
           </div>
         </div>
