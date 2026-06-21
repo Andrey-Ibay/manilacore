@@ -101,7 +101,7 @@ const FullDetails = ({ setToggleFullDetails, setDetailSlide, setFullData }) => {
             <div className="shrink-0 h-13 bg-[rgba(10,5,2,0.85)] border-t border-[rgba(201,168,76,0.12)] flex items-center justify-between px-4 gap-3">
               <div className="flex gap-1.75 items-center" id="detail-img-dots">
                 {setDetailSlide.map((_, i) => (
-                    <button key={i} className={`${i === detailImgCur ? "w-9 bg-(--gold)" : "w-5.5 bg-[rgba(201,168,76,0.2)]"}  h-0.5 border-0 p-0 cursor-pointer  transition-[background,width] duration-300`} onclick="detailImgGoTo(${i})" 
+                    <button key={i} className={`${i === detailImgCur ? "w-9 bg-(--gold)" : "w-5.5 bg-[rgba(201,168,76,0.2)]"}  h-0.5 border-0 p-0 cursor-pointer  transition-[background,width] duration-300`}
                     onClick={() => detailImgGoTo(i)}></button>
                   ))
                 }
