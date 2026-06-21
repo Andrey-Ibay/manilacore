@@ -321,6 +321,36 @@ export default function LoginPage() {
       const [disabledLogin, setDisabledLogin] = useState(false); 
       const [disabledRegister, setDisabledRegister] = useState(false);
       const [disabledReset, setDisabledReset] = useState(false);
+
+      const LEGAL_CONTENT = {
+  terms: {
+    title: 'Terms of Service',
+    icon: `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>`,
+    sections: [
+      { title: 'Acceptance of Terms', body: 'By creating an account or using the Maynila Heritage Portal, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, please refrain from using the platform.' },
+      { title: 'Use of the Platform', body: 'Maynila is a cultural heritage portal dedicated to preserving and celebrating the history, traditions, food, and culture of Manila. You agree to use the platform only for lawful purposes and in a manner consistent with its educational and cultural mission.' },
+      { title: 'User Accounts', body: 'You are responsible for maintaining the confidentiality of your account credentials. You agree to provide accurate information when registering and to notify us promptly of any unauthorized use of your account.' },
+      { title: 'Community Content', body: 'Photos and content shared through the Community Photos feature must be your own work or content you have permission to share. By uploading content, you grant Maynila a non-exclusive license to display it within the platform.<ul><li>No copyrighted material without permission</li><li>No offensive, harmful, or misleading content</li><li>Content must relate to Manila\'s history or culture</li></ul>' },
+      { title: 'Intellectual Property', body: 'All historical content, design elements, and original text on this platform are the property of Maynila Heritage Portal unless otherwise credited. Historical facts and public domain information remain freely attributable.' },
+      { title: 'Limitation of Liability', body: 'Maynila is provided "as is" for educational and cultural purposes. While we strive for historical accuracy, we make no warranties regarding the completeness of any information presented.' },
+      { title: 'Changes to These Terms', body: 'We may update these Terms of Service from time to time. Continued use of the platform after changes constitutes acceptance of the revised terms.' },
+    ]
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    icon: `<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>`,
+    sections: [
+      { title: 'Information We Collect', body: 'When you register for an account, we collect your name, email address, and password (securely hashed). If you sign in with Google, we receive your name and email from your Google account.' },
+      { title: 'How We Use Your Information', body: 'We use your information to create and manage your account, personalize your experience, and enable features like saving favorite places and sharing community photos.<ul><li>Account creation and authentication</li><li>Displaying your name on shared content</li><li>Sending optional updates about new heritage content</li></ul>' },
+      { title: 'Community Photo Sharing', body: 'Photos you upload to the Community Photos gallery are visible to all visitors of the platform alongside your display name. Please only share photos you are comfortable making public.' },
+      { title: 'Data Storage & Security', body: 'We take reasonable measures to protect your personal information from unauthorized access, alteration, or disclosure. Passwords are never stored in plain text.' },
+      { title: 'Cookies & Local Storage', body: 'The platform may use local browser storage to remember your preferences, such as your "Remember Me" login setting. We do not use third-party advertising cookies.' },
+      { title: 'Third-Party Services', body: 'If you choose to sign in with Google, your authentication is handled by Google\'s Identity Services. We do not receive or store your Google password.' },
+      { title: 'Your Rights', body: 'You may request to access, update, or delete your personal data at any time by contacting us through the platform. You may also delete your account, which will remove your personal information from our records.' },
+      { title: 'Changes to This Policy', body: 'We may revise this Privacy Policy periodically. We encourage you to review this page occasionally to stay informed of any updates.' },
+    ]
+  }
+};
 	  
     return (
         <>
@@ -683,7 +713,7 @@ export default function LoginPage() {
                     </div>
 
                     {/* Terms and Privacy */}       
-                    <div id="legal-modal" className={`fixed inset-0 z-400 bg-[rgba(5,3,1,0.88)] backdrop-blur-[10px] items-center justify-center p-6 opacity-100 flex transition-opacity duration-300`}>
+                    <div id="legal-modal" className={`fixed inset-0 z-400 bg-[rgba(5,3,1,0.88)] backdrop-blur-[10px] items-center justify-center p-6 opacity-100 hidden transition-opacity duration-300`}>
                         <div className="bg-(--cream) max-w-160 w-full max-h-[82vh] flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.6)] animate-detailSlideIn">
                             <div className="shrink-0 bg-(--ink) px-9 pt-7 pb-6 relative border-b-2 border-(--gold)">
                                 <button className="absolute top-4.5 right-4.5 w-8 h-8 rounded-full bg-[rgba(255,255,255,0.06)] border border-[rgba(201,168,76,0.25)] text-white/60 cursor-pointer flex items-center justify-center transition-[background,color,transform] duration-200 hover:bg-[rgba(201,168,76,0.2)] hover:text-(--gold) hover:rotate-90"  aria-label="Close" onClick={() => openLegal(false)}>
@@ -704,18 +734,7 @@ export default function LoginPage() {
                             </div>
 
                             <div className="flex-1 overflow-y-auto px-9 pt-7 pb-8" id="legal-body">
-                                <div class="legal-updated">
-                                    Last updated: June 2026
-                                </div>
-                                
-                                ${data.sections.map((s, i) => `
-                                <div class="legal-section">
-                                    <div class="legal-section-title">
-                                    <span class="legal-section-num">${i + 1}</span>
-                                    ${s.title}
-                                    </div>
-                                    <div class="legal-section-text">${s.body}</div>
-                                </div>
+               
                             </div>
 
                             <div className="shrink-0 px-9 py-4.5 border-t border-(--border) flex justify-end gap-2.5">
