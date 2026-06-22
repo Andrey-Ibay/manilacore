@@ -1,72 +1,4 @@
-/*
-'use client';
-import { createClient } from "@/utils/supabase/client";
-import { useState, useEffect } from 'react';
 
-export default function ActivityLogsPage(){
-    const [activityLogs, setActivityLogs] = useState([]);
-    const supabase = createClient();
-    
-    useEffect(() => {
-        const renderLogs = async () => {
-            const { data } = await supabase
-                .from('items')
-                .select('*')
-    
-            if(data){
-                setActivityLogs([...activityLogs, data]);
-            }
-        }
-        renderLogs();
-    }, []);
-
-    const deleteRow = async (row) => {
-        const { data : recycleRow, error } = await supabase
-            .from('recycling_bin')
-            .insert([
-                {
-                    id: row.id,
-                    user_id: row.user_id,
-                    created_at: row.created_at,
-                    image_path: row.image_path,
-                    user_name: row.user_name,
-                    headers: row.headers,
-                    description: row.description,
-                    category_id: row.category_id,
-                    date: row.date,
-                }
-            ])
-        
-        const {data : removedRow} = await supabase
-            .from('items')
-            .delete()
-            .eq("id", row.id)
-
-        const updatedLogs = activityLogs.filter(item => item !== row.id);
-        setActivityLogs(updatedLogs);
-    }
-    return(
-        <div className="flex">
-            
-                {
-                    activityLogs.map((row, index) => (
-                        <div key={index} className="flex">
-                            <img src={row.avatar_url || "#"} className="rounded-full w-10 h-10 mr-2" />
-                            <div>{row.id}</div>
-                            <div>{row.user_id}</div>
-                            <div>{row.created_at}</div>
-                            <div>{row.user_name}</div>
-                            <div>{row.image_path}</div>
-                            <div>{row.headers}</div>
-                            <div>{row.description}</div>
-                            <div>{row.category_id}</div>
-                            <div>{row.date}</div>
-                            <button onClick={deleteRow(row)}>Delete</button>
-                        </div>
-                    ))
-                }
-            
-        </div>*/
 'use client';
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
@@ -80,8 +12,9 @@ export default function ActivityLogsPage(){
     
     useEffect(() => {
         const renderLogs = async () => {
+            
             const { data } = await supabase
-                .from('items')
+                .from('activity_logs')
                 .select('*')
     
             if(data){
@@ -92,6 +25,7 @@ export default function ActivityLogsPage(){
     }, []);
 
     const deleteRow = async (row) => {
+        const { data: {user} } = await supabase.auth.getUser();
         const { data : recycleRow, error } = await supabase
             .from('recycling_bin')
             .insert([
@@ -105,7 +39,8 @@ export default function ActivityLogsPage(){
                     description: row.description,
                     category_id: row.category_id,
                     date: row.date,
-                    avatar_url: row.avatar_url
+                    avatar_url: row.avatar_url,
+                    deleted_by: user.user_metadata.full_name
                 }
             ])
         
@@ -114,54 +49,26 @@ export default function ActivityLogsPage(){
             .delete()
             .eq("id", row.id)
 
-        const updatedLogs = activityLogs.filter(item => item !== row.id);
+        const {data} = await supabase
+            .from('activity_logs')
+            .delete()
+            .eq("id", row.id)
+
+        const updatedLogs = activityLogs.filter(item => item.id !== row.id);
         setActivityLogs(updatedLogs);
     }
     
-    /* Simulated Activity Logs
-    let activityLogs = [
-        { id: 1, 
-          time: '09:42 AM', 
-          date: 'Jun 18, 2026', 
-          title: 'Binondo Church', 
-          desc: 'Ang ganda pala dito, nakakarelax ang paligid.', 
-          user: 'Andrey Ibay', 
-          initials: 'AI', 
-          color: 'bg-[#8A6B1A]', 
-          action: 'created' 
-        },
-        { id: 2, 
-          time: '05:21 PM', 
-          date: 'Jun 20, 2026', 
-          title: 'Aliwan Festival', 
-          desc: 'Ang ganda pala dito, nakakarelax ang paligid.', 
-          user: 'Christian David', 
-          initials: 'CD', 
-          color: 'bg-[#8B1A1A]', 
-          action: 'edited' 
-        },
-        { id: 3, 
-          time: '01:30 PM', 
-          date: 'Jun 19, 2026', 
-          title: 'Fishball', 
-          desc: 'Ang sarap talaga kumain ng fishball.', 
-          user: 'Michael Estorgio', 
-          initials: 'ME', 
-          color: 'bg-[#1d3557]', 
-          action: 'deleted' 
-        },   
-    ]*/
 
     const [filter, setFilter] = useState('all');
     const [search, setSearch] = useState("");
 
-    let rows = activityLogs.filter(item => filter === 'all');
+    let [rows] = activityLogs.filter(item => filter === 'all');
     
     if (search) {
         rows = rows.filter(item => 
-            item.title.toLowerCase().includes(search) ||
-            item.desc.toLowerCase().includes(search) ||
-            item.user.toLowerCase().includes(search)
+            item.headers?.toLowerCase().includes(search.toLowerCase()) ||
+            item.description?.toLowerCase().includes(search.toLowerCase()) ||
+            item.user_name?.toLowerCase().includes(search.toLowerCase())
         );
     }
 
@@ -244,7 +151,7 @@ export default function ActivityLogsPage(){
                             </thead>
 
                             <tbody className="last:border-b-0 border-b border-(--border) transition-[background] duration-150" id="activity-table-body">
-                                {(rows.length === 0) ? (
+                                {(!rows) ? (
                                     <tr className="text-center py-17.5 px-5 text-(--warm-gray)">
                                         {/*<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12 text-[rgba(140,123,107,0.3)] mb-4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>*/}
 
@@ -266,11 +173,14 @@ export default function ActivityLogsPage(){
                                             desc={row.description}
                                             pic={row.avatar_url}
                                             user={row.user_name}
+                                            action={row.action}
+                                            deleteRow={deleteRow}
+                                            row={row}
                                             /> 
                                         )
                                     ))
                                 }
-                                {/*Consider rows.action */}
+                               
                             </tbody>
                         </table>
                     </div>

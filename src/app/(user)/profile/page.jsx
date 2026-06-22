@@ -135,13 +135,30 @@ export default function ProfilePage(){
         return filePath;
     }
 
-    const deleteImage = async (id) => {
+    const deleteImage = async (imgKey) => {
+        const { data: newRow, error } = await supabase
+            .from("activity_logs")
+            .insert([
+                {
+                    user_id: imgKey.user_id,
+                    image_path: imgKey.image_path,
+                    category_id: imgKey.category_id,
+                    description: imgKey.description,
+                    headers: imgKey.headers,
+                    user_name: imgKey.user_name,
+                    avatar_url: imgKey.avatar_url,
+                    action: "deleted"
+                }
+            ])
+            .select()
+            .single();
+
         const {data} = await supabase
             .from("items")
             .delete()
-            .eq('id', id);
+            .eq('id', imgKey.id);
 
-        const updatedItems = images.filter(item => item !== id);
+        const updatedItems = images.filter(item => item !== imgKey.id);
         setItems(updatedItems);
     }
     //saves the file from the storage bucket in supabase to the table
@@ -165,7 +182,24 @@ export default function ProfilePage(){
                     description: desc,
                     headers: head,
                     user_name: user.user_metadata.full_name,
-                    avatar_url: user.user_metadata.avatar_url
+                    avatar_url: user.user_metadata.avatar_url,
+                }
+            ])
+            .select()
+            .single();
+
+        const { data: actLog } = await supabase
+            .from("activity_log")
+            .insert([
+                {
+                    user_id: user.id,
+                    image_path: filePath,
+                    category_id: geminiCategoryResult,
+                    description: desc,
+                    headers: head,
+                    user_name: user.user_metadata.full_name,
+                    avatar_url: user.user_metadata.avatar_url,
+                    action: "created"
                 }
             ])
             .select()
@@ -312,7 +346,7 @@ export default function ProfilePage(){
                                 <p>{imageKey.description}</p>
                             </div>
                             <button onClick={() => {
-                                deleteImage(imageKey.id);
+                                deleteImage(imageKey);
                                 setOpenedImage(false);
                                 }}>Delete Image</button>
                         </div>

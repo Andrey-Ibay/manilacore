@@ -12,19 +12,26 @@ export default function LoginPage() {
 
     const handleLogin = async () => {
         //sends entered email and password to supabase
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-            
-        });
+        if(email && password){
 
-        if(error){ 
-            console.log("error: " + error)
-        }else {
-            console.log("Routing to admin.")
-            window.location.href = '/admin';
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+                
+            });
+    
+            if(error){ 
+                alert("Error: ", error)
+                console.log("error: " + error);
+            }else {
+                console.log("Routing to admin.")
+                alert("Success.")
+                window.location.href = '/admin';
+            }
+            console.log("End of handleLogin()")
+            console.log("email: ", email);
+            console.log("password: ", password);
         }
-        console.log("End of handleLogin()")
     };
     const handleGoogleLogin = async () => {
         const { data, error } = await supabase.auth.signInWithOAuth({
@@ -35,10 +42,9 @@ export default function LoginPage() {
                     prompt: 'select_account',
                 },
             // This tells Google where to send the user back to in the app
-            // Hardcoded since faced with conflicts in vercel and oauth routing
+            
             redirectTo: `${window.location.origin}/auth/callback`,
-            //Uncomment and FIX THIS ROUTE TO VERCEL after the presentation
-            //redirectTo: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`,
+            
             },
         });
 
@@ -72,8 +78,8 @@ export default function LoginPage() {
       }
     
       /* Login Validation Logic */ 
-      const [emailLogin, setEmailLogin] = useState("");
-      const [passwordLogin, setPasswordLogin] = useState("");
+      
+
     
       const [errorEmailLogin, setErrorEmailLogin] = useState("");
       const [errorPasswordLogin, setErrorPasswordLogin] = useState("");
@@ -94,39 +100,25 @@ export default function LoginPage() {
         setErrorPasswordLogin("");
         setAccountNotFound(false);
     
-        if (emailLogin === "") {
+        if (email === "") {
           setErrorEmailLogin("Email is required.");
           setInvalidEmailLogin(true);
-        } else if (!validateEmailLogin(emailLogin)) {
+        } else if (!validateEmailLogin(email)) {
           setErrorEmailLogin("Enter a valid email address.");
           setInvalidEmailLogin(true);
         } else {
           setInvalidEmailLogin(false);
         }
     
-        if (passwordLogin === "") {
+        if (password === "") {
           setErrorPasswordLogin("Password is required.");
           setInvalidPasswordLogin(true);
         } else {
           setInvalidPasswordLogin(false);
         }
     
-        /* This line is for testing only (Error Banner & Back End dependent) */
-        if (passwordLogin !== "" && 
-            validateEmailLogin(emailLogin) && 
-            emailLogin !== "") {
-              setErrorAccount("Incorrect email or password. Try again.");
-              setLoadingLogin(true);
-              setDisabledLogin(true);
-    
-              setTimeout(() => {
-                setAccountNotFound(true);
-                setLoadingLogin(false);
-                setDisabledLogin(false);
-              }, 1500);
-        } else {
-          setAccountNotFound(false);
-        }
+       
+        handleLogin();
       };
     
       /* Register Validation Logic */ 
@@ -321,7 +313,37 @@ export default function LoginPage() {
       const [disabledLogin, setDisabledLogin] = useState(false); 
       const [disabledRegister, setDisabledRegister] = useState(false);
       const [disabledReset, setDisabledReset] = useState(false);
-	  
+
+      const LEGAL_CONTENT = {
+  terms: {
+    title: 'Terms of Service',
+    icon: `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>`,
+    sections: [
+      { title: 'Acceptance of Terms', body: 'By creating an account or using the Maynila Heritage Portal, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, please refrain from using the platform.' },
+      { title: 'Use of the Platform', body: 'Maynila is a cultural heritage portal dedicated to preserving and celebrating the history, traditions, food, and culture of Manila. You agree to use the platform only for lawful purposes and in a manner consistent with its educational and cultural mission.' },
+      { title: 'User Accounts', body: 'You are responsible for maintaining the confidentiality of your account credentials. You agree to provide accurate information when registering and to notify us promptly of any unauthorized use of your account.' },
+      { title: 'Community Content', body: 'Photos and content shared through the Community Photos feature must be your own work or content you have permission to share. By uploading content, you grant Maynila a non-exclusive license to display it within the platform.<ul><li>No copyrighted material without permission</li><li>No offensive, harmful, or misleading content</li><li>Content must relate to Manila\'s history or culture</li></ul>' },
+      { title: 'Intellectual Property', body: 'All historical content, design elements, and original text on this platform are the property of Maynila Heritage Portal unless otherwise credited. Historical facts and public domain information remain freely attributable.' },
+      { title: 'Limitation of Liability', body: 'Maynila is provided "as is" for educational and cultural purposes. While we strive for historical accuracy, we make no warranties regarding the completeness of any information presented.' },
+      { title: 'Changes to These Terms', body: 'We may update these Terms of Service from time to time. Continued use of the platform after changes constitutes acceptance of the revised terms.' },
+    ]
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    icon: `<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>`,
+    sections: [
+      { title: 'Information We Collect', body: 'When you register for an account, we collect your name, email address, and password (securely hashed). If you sign in with Google, we receive your name and email from your Google account.' },
+      { title: 'How We Use Your Information', body: 'We use your information to create and manage your account, personalize your experience, and enable features like saving favorite places and sharing community photos.<ul><li>Account creation and authentication</li><li>Displaying your name on shared content</li><li>Sending optional updates about new heritage content</li></ul>' },
+      { title: 'Community Photo Sharing', body: 'Photos you upload to the Community Photos gallery are visible to all visitors of the platform alongside your display name. Please only share photos you are comfortable making public.' },
+      { title: 'Data Storage & Security', body: 'We take reasonable measures to protect your personal information from unauthorized access, alteration, or disclosure. Passwords are never stored in plain text.' },
+      { title: 'Cookies & Local Storage', body: 'The platform may use local browser storage to remember your preferences, such as your "Remember Me" login setting. We do not use third-party advertising cookies.' },
+      { title: 'Third-Party Services', body: 'If you choose to sign in with Google, your authentication is handled by Google\'s Identity Services. We do not receive or store your Google password.' },
+      { title: 'Your Rights', body: 'You may request to access, update, or delete your personal data at any time by contacting us through the platform. You may also delete your account, which will remove your personal information from our records.' },
+      { title: 'Changes to This Policy', body: 'We may revise this Privacy Policy periodically. We encourage you to review this page occasionally to stay informed of any updates.' },
+    ]
+  }
+};
+      
     return (
         <>
             {/* LOGIN MODAL */}
@@ -363,23 +385,14 @@ export default function LoginPage() {
 
                         {/* LOGIN FORM */}
                         <div id="form-login" className={`auth-form ${tab === "Login" && !toggleResetPassword && backToLogin ? "block" : "hidden"}`}>
-                            <div className="mb-7">
+                            <div className="flex items-center justify-center mb-5">
+                                <Image src="/assets/manila_core-logo-noBg.png" alt="manilacore-logo"  width={80} height={80}/>
+                            </div>
+
+                            <div className="mb-7 text-center">
                                 <h2 className="font-['Playfair_Display',serif] text-[26px] font-bold text-(--ink) mb-1.5 max-[480px]:text-[22px]">
                                     Welcome to Manila Core!
                                 </h2>
-
-                                <p className="text-[14px] text-(--warm-gray)">
-                                    Sign in to your Maynila account
-                                </p>
-                            </div>
-
-                            <button className="w-full px-4 py-3 bg-white border border-black/20 cursor-pointer font-sans text-[14px] font-medium text-[#3c4043] flex items-center justify-center gap-3 transition-colors duration-150 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:bg-[#f8f8f8] hover:shadow-[0_2px_8px_rgba(0,0,0,0.12)]" onClick={handleGoogleLogin}>
-                            <Image src="/assets/google_logo.png" alt="Google" className="w-3.75 h-3.75 shrink-0" width={20} height={20}/>
-                            Continue with Google
-                            </button>
-
-                            <div className="flex items-center gap-3.5 my-5 text-[12px] text-black/25 tracking-widest before:content-[''] before:flex-1 before:h-px before:bg-black/10 after:content-[''] after:flex-1 after:h-px after:bg-black/10">
-                                or sign in with email
                             </div>
 
                             <div className="mb-4.5">
@@ -390,7 +403,7 @@ export default function LoginPage() {
                                 <div className="relative flex items-center">
                                     <svg className="absolute left-3.5 w-4 h-4 text-(--warm-gray) pointer-events-none shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
 
-                                    <input type="email" id="login-email" className={`w-full px-10.5 py-2.75 border bg-white font-sans text-[14px] text-(--ink) outline-none transition-colors duration-200 focus:border-(--gold) focus:shadow-[0_0_0_3px_rgba(201,168,76,0.12)] placeholder:text-[rgba(140,123,107,0.55)] ${invalidEmailLogin ? "border-[#d63031]" : "border-black/15"}`} placeholder="your@email.com" autoComplete="email" value={emailLogin} onChange={(e) => setEmailLogin(e.target.value)}/>
+                                    <input type="email" id="login-email" className={`w-full px-10.5 py-2.75 border bg-white font-sans text-[14px] text-(--ink) outline-none transition-colors duration-200 focus:border-(--gold) focus:shadow-[0_0_0_3px_rgba(201,168,76,0.12)] placeholder:text-[rgba(140,123,107,0.55)] ${invalidEmailLogin ? "border-[#d63031]" : "border-black/15"}`} placeholder="your@email.com" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                                 </div>
 
                                 <span className="block text-[12px] text-[#d63031] mt-1.25 min-h-4" id="err-login-email">
@@ -406,7 +419,7 @@ export default function LoginPage() {
                                 <div className="relative flex items-center">
                                     <svg className="absolute left-3.5 w-4 h-4 text-(--warm-gray) pointer-events-none shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
 
-                                    <input type={pwToggleLogin ? "text" : "password"} id="login-password" className={`w-full px-10.5 py-2.75 border bg-white font-sans text-[14px] text-(--ink) outline-none transition-colors duration-200 focus:border-(--gold) focus:shadow-[0_0_0_3px_rgba(201,168,76,0.12)] placeholder:text-[rgba(140,123,107,0.55)] ${invalidPasswordLogin ? "border-[#d63031]" : "border-black/15"}`} placeholder="Enter your password" autoComplete="current-password" value={passwordLogin} onChange={(e) => setPasswordLogin(e.target.value)}/> 
+                                    <input type={pwToggleLogin ? "text" : "password"} id="login-password" className={`w-full px-10.5 py-2.75 border bg-white font-sans text-[14px] text-(--ink) outline-none transition-colors duration-200 focus:border-(--gold) focus:shadow-[0_0_0_3px_rgba(201,168,76,0.12)] placeholder:text-[rgba(140,123,107,0.55)] ${invalidPasswordLogin ? "border-[#d63031]" : "border-black/15"}`} placeholder="Enter your password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)}/> 
 
                                     <button type="button" className="absolute right-3 bg-transparent border-0 cursor-pointer text-(--warm-gray) p-1 flex items-center transition-colors duration-200 hover:text-(--ink)" tabIndex="-1" onClick={passwordToggleIconLogin}>
                                     <svg className={`${!pwToggleLogin ? "flex" : "hidden"} w-4 h-4`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -448,11 +461,15 @@ export default function LoginPage() {
                                 </span>
                             </button>
 
-                            <p className="text-center text-[13px] text-(--warm-gray) mt-5">Don&apos;t have an account?&nbsp;  
-                                <button className="bg-transparent border-0 cursor-pointer text-(--gold) font-['DM_Sans', serif] text-[13px] underline underline-offset-2 transition-colors duration-200 hover:text-(--gold-dark)" onClick={registerTab}>
-                                    Register free
-                                </button>
-                            </p>
+                            
+                            <div className="flex items-center gap-3.5 my-5 text-[12px] text-black/25 tracking-widest before:content-[''] before:flex-1 before:h-px before:bg-black/10 after:content-[''] after:flex-1 after:h-px after:bg-black/10">
+                                or sign in with google
+                            </div>
+
+                            <button className="w-full px-4 py-3 bg-white border border-black/20 cursor-pointer font-sans text-[14px] font-medium text-[#3c4043] flex items-center justify-center gap-3 transition-colors duration-150 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:bg-[#f8f8f8] hover:shadow-[0_2px_8px_rgba(0,0,0,0.12)]" onClick={handleGoogleLogin}>
+                                <Image src="/assets/google_logo.png" alt="Google" className="w-3.75 h-3.75 shrink-0" width={20} height={20}/>
+                                Continue with Google
+                            </button>
                         </div>
 
                         {/* REGISTER FORM */}
@@ -681,8 +698,46 @@ export default function LoginPage() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Terms and Privacy */}       
+                    <div id="legal-modal" className={`fixed inset-0 z-400 bg-[rgba(5,3,1,0.88)] backdrop-blur-[10px] items-center justify-center p-6 opacity-100 hidden transition-opacity duration-300`}>
+                        <div className="bg-(--cream) max-w-160 w-full max-h-[82vh] flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.6)] animate-detailSlideIn">
+                            <div className="shrink-0 bg-(--ink) px-9 pt-7 pb-6 relative border-b-2 border-(--gold)">
+                                <button className="absolute top-4.5 right-4.5 w-8 h-8 rounded-full bg-[rgba(255,255,255,0.06)] border border-[rgba(201,168,76,0.25)] text-white/60 cursor-pointer flex items-center justify-center transition-[background,color,transform] duration-200 hover:bg-[rgba(201,168,76,0.2)] hover:text-(--gold) hover:rotate-90"  aria-label="Close" onClick={() => openLegal(false)}>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                </button>
+
+                                <div className="w-9.5 h-9.5 bg-[rgba(201,168,76,0.12)] border border-[rgba(201,168,76,0.3)] rounded-full flex items-center justify-center mb-3.5 text-(--gold)" id="legal-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4.5 h-4.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                </div>
+
+                                <div className="font-['Playfair_Display',serif] text-[24px] font-bold text-white mb-1.5" id="legal-title">
+                                    Terms of Service
+                                </div>
+
+                                <div className="text-[12px] text-white/40 tracking-[0.06em]" id="legal-sub">
+                                    Maynila Heritage Portal
+                                </div>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto px-9 pt-7 pb-8" id="legal-body">
+               
+                            </div>
+
+                            <div className="shrink-0 px-9 py-4.5 border-t border-(--border) flex justify-end gap-2.5">
+                                <button className="text-[12px] text-(--warm-gray) bg-transparent border-0 cursor-pointer underline underline-offset-2 font-['DM_Sans',sans-serif] mr-auto self-center transition-colors duration-200 hover:text-(--gold-dark)" id="legal-switch">
+                                    View Privacy Policy →
+                                </button>
+
+                                <button className="py-2.75 px-7 bg-(--gold) border-0 cursor-pointer font-['DM_Sans',sans-serif] text-[12px] font-medium tracking-widest uppercase text-(--ink) transition-colors duration-200 hover:bg-(--gold-light)">
+                                    I Understand
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
     )
 }   
+
