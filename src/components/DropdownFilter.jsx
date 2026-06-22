@@ -75,8 +75,8 @@ export default function DropdownFilter(props){
     };
     
     return (
-        <div className="flex">
-            <select className="text-white p-4 m-4" onChange={categorySelection}>
+        <div className="flex w-full">
+            <select className="text-white p-4 m-4 w-[40%]" onChange={categorySelection}>
                 <option value="all" className="bg-(--ink)">All</option>
                 {
                     props.filterCat && props.filterCat.map((cat) => (
@@ -86,7 +86,7 @@ export default function DropdownFilter(props){
                     ))
                 }
             </select>
-            <select className="text-white p-4 m-4" onChange={subCategorySelection}>
+            <select className="text-white p-4 m-4 w-[40%]" onChange={subCategorySelection}>
                 <option value="all" className="bg-(--ink)">All</option>
                 {
                     props.filterSubCat && props.filterSubCat.map((cat) => (

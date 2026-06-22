@@ -20,7 +20,7 @@ export async function GET(request){
                 
             //if the user exists
             if(person){
-                if(person.role == "admin"){
+                if(person.role == "admin" || person.role == "superadmin"){
                     return NextResponse.redirect(`${origin}/admin`);
                 }else if(person.role == "user"){
                     return NextResponse.redirect(`${origin}/profile`);

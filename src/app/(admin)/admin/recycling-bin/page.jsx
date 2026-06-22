@@ -1,38 +1,117 @@
-'use client';
 
-import React, { useState } from "react";
+'use client';
+import React, { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
+import RecycleBinRows from "@/components/admin/RecycleBinRows";
 
 export default function RecyclingBinPage(){
-    let isSuper = false;
+    const supabase = createClient();
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isSuper, setIsSuper] = useState(false);
+    const [activityLogs, setActivityLogs] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const { data } = await supabase
+                .from('recycling_bin')
+                .select('*')
+    
+            if(data){
+                setActivityLogs([...activityLogs, data]);
+            }
+        }
+        fetchData()
+    }, [])
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const { data: {user}} = await supabase.auth.getUser();
 
-    let recyclingBin = [
-        {   id: 101, 
-            title: 'Spam content: Fake ticket giveaway', 
-            desc: 'Promotional spam unrelated to Manila heritage, flagged by 5 users.', 
-            deletedBy: 'Gester Calvo', 
-            initials: 'CM', 
-            color: 'bg-[#1d3557]', 
-            date: 'Jun 17, 2026 · 6:21 PM' 
-        },
-        {   id: 102, 
-            title: 'Duplicate comment thread', 
-            desc: 'Identical comment posted 4 times on the Sinigang dish page.', 
-            deletedBy: 'Jeshaeki Dizon', 
-            initials: 'RV', 
-            color: 'bg-[#5c4a1e]', 
-            date: 'Jun 16, 2026 · 11:59 AM' 
-        },
-    ]
+            if(user){
+                const { data } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq("id", user.id)
+                    .single();
+        
+                if(data.role === "superadmin"){
+                    setIsSuper(true);
+                }
+            }
+        }
+        fetchUserData()
+    }, [])
+    const deleteRow = async (row) => {
+        console.log("Button triggered")
+        if(!isSuper){
+            return;
+        }
+        
+         const {data : removedRow} = await supabase
+            .from('recycling_bin')
+            .delete()
+            .eq("id", row.id)
+        
+
+        const updatedLogs = activityLogs.filter(item => item !== row.id);
+        setActivityLogs(updatedLogs);
+        console.log("The code block still finished");
+    }
+    const restoreRow = async (row) => {
+        const { data: {user} } = await supabase.auth.getUser();
+        const { data : recycleRow, error } = await supabase
+            .from('activity_logs')
+            .insert([
+                {
+                    id: row.id,
+                    user_id: row.user_id,
+                    created_at: row.created_at,
+                    image_path: row.image_path,
+                    user_name: row.user_name,
+                    headers: row.headers,
+                    description: row.description,
+                    category_id: row.category_id,
+                    date: row.date,
+                    avatar_url: row.avatar_url,
+                    action: row.action,
+                }
+            ])
+        const { data } = await supabase
+            .from('items')
+            .insert([
+                {
+                    id: row.id,
+                    user_id: row.user_id,
+                    created_at: row.created_at,
+                    image_path: row.image_path,
+                    user_name: row.user_name,
+                    headers: row.headers,
+                    description: row.description,
+                    category_id: row.category_id,
+                    date: row.date,
+                    avatar_url: row.avatar_url,
+                }
+            ])
+        
+        const {data : removedRow} = await supabase
+            .from('recycling_bin')
+            .delete()
+            .eq("id", row.id)
+        
+
+        const updatedLogs = activityLogs.filter(item => item.id !== row.id);
+        setActivityLogs(updatedLogs);
+    }
 
     const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState('all');
 
-    let rows = recyclingBin;
+    let [rows] = activityLogs.filter(item => filter === 'all');
+    
 
     if (search) {
     rows = rows.filter(item =>
-      item.title.toLowerCase().includes(search.toLowerCase()) ||
-      item.desc.toLowerCase().includes(search.toLowerCase()) ||
-      item.deletedBy.toLowerCase().includes(search.toLowerCase())
+      item.headers?.toLowerCase().includes(search.toLowerCase()) ||
+      item.description?.toLowerCase().includes(search.toLowerCase()) ||
+      item.deleted_by?.toLowerCase().includes(search.toLowerCase())
     );
   }
     return(
@@ -91,12 +170,12 @@ export default function RecyclingBinPage(){
                     <div className="bg-white border border-(--border) overflow-hidden">
                         <table className="w-full border-collapse">
                             <thead className="text-left px-4.5 py-3.5 bg-(--ink) text-white/50 text-[10px] tracking-[0.12em] uppercase font-medium border-b border-[rgba(201,168,76,0.2)]">
-                                <tr>
+                                <tr className="last:border-b-0 border-b border-(--border) transition-[background] duration-150">
                                     <th className="w-32.5 text-left px-4.5 py-3.5 bg-(--ink) text-white/50 text-[10px] tracking-[0.12em] uppercase font-medium border-b border-[rgba(201,168,76,0.2)]">
                                         Deleted On
                                     </th>
 
-                                    <th>
+                                    <th className="text-left py-3.5 px-4.5 bg-(--ink) text-white/50 text-[10px] tracking-[0.12em] uppercase font-medium border-b border-[rgba(201,168,76,0.2)]">
                                         Title &amp; Description
                                     </th>
 
@@ -110,7 +189,41 @@ export default function RecyclingBinPage(){
                                 </tr>
                             </thead>
 
-                            <tbody id="bin-table-body"></tbody>
+                            <tbody id="bin-table-body" >
+                                {(!rows) ? (
+                                    <tr className="text-center py-17.5 px-5 text-(--warm-gray)">
+                                        {/*<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12 text-[rgba(140,123,107,0.3)] mb-4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>*/}
+
+                                        <td className="font-['Playfair_Display',serif] text-[18px] text-(--ink) mb-1.5">
+                                            No activity found
+                                        </td>
+
+                                        <td className="text-[13px]">
+                                            Try adjusting your filters or search term.
+                                        </td>
+                                    </tr>
+                                    ) : 
+                                    (rows.map((row, index) => (
+                                        <RecycleBinRows 
+                                            key={index} 
+                                            created_at={row.created_at}
+                                            date={row.date}
+                                            title={row.headers}
+                                            desc={row.description}
+                                            pic={row.avatar_url}
+                                            user={row.user_name}
+                                            action={row.action}
+                                            restoreRow={restoreRow}
+                                            deleted_by={row.deleted_by}
+                                            deleteRow={deleteRow}
+                                            row={row}
+                                            isSuper={isSuper}
+                                            /> 
+                                        )
+                                    ))
+                                }
+                               
+                            </tbody>
                         </table>
                     </div>
                 </div>

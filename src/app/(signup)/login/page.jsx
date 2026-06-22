@@ -12,19 +12,26 @@ export default function LoginPage() {
 
     const handleLogin = async () => {
         //sends entered email and password to supabase
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-            
-        });
+        if(email && password){
 
-        if(error){ 
-            console.log("error: " + error)
-        }else {
-            console.log("Routing to admin.")
-            window.location.href = '/admin';
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+                
+            });
+    
+            if(error){ 
+                alert("Error: ", error)
+                console.log("error: " + error);
+            }else {
+                console.log("Routing to admin.")
+                alert("Success.")
+                window.location.href = '/admin';
+            }
+            console.log("End of handleLogin()")
+            console.log("email: ", email);
+            console.log("password: ", password);
         }
-        console.log("End of handleLogin()")
     };
     const handleGoogleLogin = async () => {
         const { data, error } = await supabase.auth.signInWithOAuth({
@@ -35,10 +42,9 @@ export default function LoginPage() {
                     prompt: 'select_account',
                 },
             // This tells Google where to send the user back to in the app
-            // Hardcoded since faced with conflicts in vercel and oauth routing
+            
             redirectTo: `${window.location.origin}/auth/callback`,
-            //Uncomment and FIX THIS ROUTE TO VERCEL after the presentation
-            //redirectTo: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`,
+            
             },
         });
 
@@ -72,8 +78,8 @@ export default function LoginPage() {
       }
     
       /* Login Validation Logic */ 
-      const [emailLogin, setEmailLogin] = useState("");
-      const [passwordLogin, setPasswordLogin] = useState("");
+      
+
     
       const [errorEmailLogin, setErrorEmailLogin] = useState("");
       const [errorPasswordLogin, setErrorPasswordLogin] = useState("");
@@ -94,39 +100,25 @@ export default function LoginPage() {
         setErrorPasswordLogin("");
         setAccountNotFound(false);
     
-        if (emailLogin === "") {
+        if (email === "") {
           setErrorEmailLogin("Email is required.");
           setInvalidEmailLogin(true);
-        } else if (!validateEmailLogin(emailLogin)) {
+        } else if (!validateEmailLogin(email)) {
           setErrorEmailLogin("Enter a valid email address.");
           setInvalidEmailLogin(true);
         } else {
           setInvalidEmailLogin(false);
         }
     
-        if (passwordLogin === "") {
+        if (password === "") {
           setErrorPasswordLogin("Password is required.");
           setInvalidPasswordLogin(true);
         } else {
           setInvalidPasswordLogin(false);
         }
     
-        /* This line is for testing only (Error Banner & Back End dependent) */
-        if (passwordLogin !== "" && 
-            validateEmailLogin(emailLogin) && 
-            emailLogin !== "") {
-              setErrorAccount("Incorrect email or password. Try again.");
-              setLoadingLogin(true);
-              setDisabledLogin(true);
-    
-              setTimeout(() => {
-                setAccountNotFound(true);
-                setLoadingLogin(false);
-                setDisabledLogin(false);
-              }, 1500);
-        } else {
-          setAccountNotFound(false);
-        }
+       
+        handleLogin();
       };
     
       /* Register Validation Logic */ 
@@ -351,7 +343,7 @@ export default function LoginPage() {
     ]
   }
 };
-	  
+      
     return (
         <>
             {/* LOGIN MODAL */}
@@ -393,23 +385,14 @@ export default function LoginPage() {
 
                         {/* LOGIN FORM */}
                         <div id="form-login" className={`auth-form ${tab === "Login" && !toggleResetPassword && backToLogin ? "block" : "hidden"}`}>
-                            <div className="mb-7">
+                            <div className="flex items-center justify-center mb-5">
+                                <Image src="/assets/manila_core-logo-noBg.png" alt="manilacore-logo"  width={80} height={80}/>
+                            </div>
+
+                            <div className="mb-7 text-center">
                                 <h2 className="font-['Playfair_Display',serif] text-[26px] font-bold text-(--ink) mb-1.5 max-[480px]:text-[22px]">
                                     Welcome to Manila Core!
                                 </h2>
-
-                                <p className="text-[14px] text-(--warm-gray)">
-                                    Sign in to your Maynila account
-                                </p>
-                            </div>
-
-                            <button className="w-full px-4 py-3 bg-white border border-black/20 cursor-pointer font-sans text-[14px] font-medium text-[#3c4043] flex items-center justify-center gap-3 transition-colors duration-150 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:bg-[#f8f8f8] hover:shadow-[0_2px_8px_rgba(0,0,0,0.12)]" onClick={handleGoogleLogin}>
-                            <Image src="/assets/google_logo.png" alt="Google" className="w-3.75 h-3.75 shrink-0" width={20} height={20}/>
-                            Continue with Google
-                            </button>
-
-                            <div className="flex items-center gap-3.5 my-5 text-[12px] text-black/25 tracking-widest before:content-[''] before:flex-1 before:h-px before:bg-black/10 after:content-[''] after:flex-1 after:h-px after:bg-black/10">
-                                or sign in with email
                             </div>
 
                             <div className="mb-4.5">
@@ -420,7 +403,7 @@ export default function LoginPage() {
                                 <div className="relative flex items-center">
                                     <svg className="absolute left-3.5 w-4 h-4 text-(--warm-gray) pointer-events-none shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
 
-                                    <input type="email" id="login-email" className={`w-full px-10.5 py-2.75 border bg-white font-sans text-[14px] text-(--ink) outline-none transition-colors duration-200 focus:border-(--gold) focus:shadow-[0_0_0_3px_rgba(201,168,76,0.12)] placeholder:text-[rgba(140,123,107,0.55)] ${invalidEmailLogin ? "border-[#d63031]" : "border-black/15"}`} placeholder="your@email.com" autoComplete="email" value={emailLogin} onChange={(e) => setEmailLogin(e.target.value)}/>
+                                    <input type="email" id="login-email" className={`w-full px-10.5 py-2.75 border bg-white font-sans text-[14px] text-(--ink) outline-none transition-colors duration-200 focus:border-(--gold) focus:shadow-[0_0_0_3px_rgba(201,168,76,0.12)] placeholder:text-[rgba(140,123,107,0.55)] ${invalidEmailLogin ? "border-[#d63031]" : "border-black/15"}`} placeholder="your@email.com" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                                 </div>
 
                                 <span className="block text-[12px] text-[#d63031] mt-1.25 min-h-4" id="err-login-email">
@@ -436,7 +419,7 @@ export default function LoginPage() {
                                 <div className="relative flex items-center">
                                     <svg className="absolute left-3.5 w-4 h-4 text-(--warm-gray) pointer-events-none shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
 
-                                    <input type={pwToggleLogin ? "text" : "password"} id="login-password" className={`w-full px-10.5 py-2.75 border bg-white font-sans text-[14px] text-(--ink) outline-none transition-colors duration-200 focus:border-(--gold) focus:shadow-[0_0_0_3px_rgba(201,168,76,0.12)] placeholder:text-[rgba(140,123,107,0.55)] ${invalidPasswordLogin ? "border-[#d63031]" : "border-black/15"}`} placeholder="Enter your password" autoComplete="current-password" value={passwordLogin} onChange={(e) => setPasswordLogin(e.target.value)}/> 
+                                    <input type={pwToggleLogin ? "text" : "password"} id="login-password" className={`w-full px-10.5 py-2.75 border bg-white font-sans text-[14px] text-(--ink) outline-none transition-colors duration-200 focus:border-(--gold) focus:shadow-[0_0_0_3px_rgba(201,168,76,0.12)] placeholder:text-[rgba(140,123,107,0.55)] ${invalidPasswordLogin ? "border-[#d63031]" : "border-black/15"}`} placeholder="Enter your password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)}/> 
 
                                     <button type="button" className="absolute right-3 bg-transparent border-0 cursor-pointer text-(--warm-gray) p-1 flex items-center transition-colors duration-200 hover:text-(--ink)" tabIndex="-1" onClick={passwordToggleIconLogin}>
                                     <svg className={`${!pwToggleLogin ? "flex" : "hidden"} w-4 h-4`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -478,11 +461,15 @@ export default function LoginPage() {
                                 </span>
                             </button>
 
-                            <p className="text-center text-[13px] text-(--warm-gray) mt-5">Don&apos;t have an account?&nbsp;  
-                                <button className="bg-transparent border-0 cursor-pointer text-(--gold) font-['DM_Sans', serif] text-[13px] underline underline-offset-2 transition-colors duration-200 hover:text-(--gold-dark)" onClick={registerTab}>
-                                    Register free
-                                </button>
-                            </p>
+                            
+                            <div className="flex items-center gap-3.5 my-5 text-[12px] text-black/25 tracking-widest before:content-[''] before:flex-1 before:h-px before:bg-black/10 after:content-[''] after:flex-1 after:h-px after:bg-black/10">
+                                or sign in with google
+                            </div>
+
+                            <button className="w-full px-4 py-3 bg-white border border-black/20 cursor-pointer font-sans text-[14px] font-medium text-[#3c4043] flex items-center justify-center gap-3 transition-colors duration-150 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:bg-[#f8f8f8] hover:shadow-[0_2px_8px_rgba(0,0,0,0.12)]" onClick={handleGoogleLogin}>
+                                <Image src="/assets/google_logo.png" alt="Google" className="w-3.75 h-3.75 shrink-0" width={20} height={20}/>
+                                Continue with Google
+                            </button>
                         </div>
 
                         {/* REGISTER FORM */}
@@ -753,3 +740,4 @@ export default function LoginPage() {
         </>
     )
 }   
+
